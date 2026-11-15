@@ -77,7 +77,7 @@ export const POSTS: Post[] = [
   {
     slug: 'kerala-panchakarma-therapies-explained',
     title: 'Pizhichil, Shirodhara, Elakizhi: Kerala’s classical therapies, explained',
-    dek: 'What each of the clinic’s six therapies actually involves, from the oil to the hands that give it.',
+    dek: 'What each of the clinic’s classical therapies actually involves, from the oil to the hands that give it.',
     kind: 'Therapies',
     treatments: ['pizhichil', 'shirodhara', 'abhyanga', 'elakizhi', 'njavarakizhi', 'udwarthana'],
     minutes: 6,
@@ -109,7 +109,7 @@ export const POSTS: Post[] = [
     minutes: 5,
     published: '2026-11-08',
     revised: '2026-11-13',
-    cover: { src: '/photos/shirodhara.jpg', alt: 'Shirodhara, warm oil streaming onto the forehead', position: '30% 50%' },
+    cover: { src: '/photos/shirodhara-dhara.jpg', alt: 'Shirodhara, warm oil streaming onto the forehead', position: '18% 50%' },
     answer: 'Most recurring and persistent headaches are migraine, tension-type headaches, cluster headaches or sinus headaches. A sudden, severe headache, often described as the worst headache of one’s life, or one with fever and a stiff neck, weakness, confusion or loss of vision, needs emergency care first. For persistent headaches, the AVVVS Headache Clinic offers personalised Ayurvedic treatments.',
     blocks: [
       { t: 'note', h: 'First, the warning signs', text: 'Go to an emergency department at once in case of a sudden, severe headache unlike any before; a headache with fever and a stiff neck; with confusion, weakness, numbness or difficulty speaking; with loss of vision; or after a head injury.' },

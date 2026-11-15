@@ -77,7 +77,7 @@ export const CLINICS: Clinic[] = [
       { h: 'Personalised plans', p: 'A plan written for your pain, your history and your daily life.' },
       { h: 'Mobility', p: 'Care aimed at moving more freely and getting back to everyday activities.' },
     ],
-    therapies: ['pizhichil', 'abhyanga', 'elakizhi', 'njavarakizhi', 'dhanyamla-dhara', 'lepana'],
+    therapies: ['kati-vasti', 'pizhichil', 'abhyanga', 'elakizhi', 'njavarakizhi', 'dhanyamla-dhara', 'lepana'],
     image: { src: '/photos/pain.jpg', alt: 'A doctor’s hands examining a patient’s lower back', position: '45% 45%' },
     lead: 'Under the guidance of Dr. Ranjith Kumar, BAMS, MBBS, DA, MD',
     faq: [

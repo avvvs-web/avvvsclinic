@@ -9,6 +9,6 @@ export function generateStaticParams() { return [...CLINICS.map((c) => ({ slug: 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const c = CLINICS.find((x) => x.slug === slug);
-  if (!c) return ogImage({ still: 'photos/hairoil.jpg', kicker: REVIVE.kicker, title: 'Gloveda Revive: healthy skin, beautiful hair.' });
+  if (!c) return ogImage({ still: 'photos/revive.jpg', kicker: REVIVE.kicker, title: 'Gloveda Revive: healthy skin, beautiful hair.' });
   return ogImage({ still: c.image.src.replace(/^\//, ''), kicker: 'Speciality clinic · Kozhikode', title: c.name });
 }

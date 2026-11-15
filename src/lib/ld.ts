@@ -54,7 +54,7 @@ export function clinicLd(doctors: Doctor[] = [], therapies: Therapy[] = []) {
     url: SITE_URL,
     description: CLINIC.description,
     slogan: 'Over a century of authentic Ayurvedic wisdom.',
-    image: [abs('/opengraph-image'), abs('/photos/shirodhara.jpg')],
+    image: [abs('/opengraph-image'), abs('/photos/shirodhara-dhara.jpg')],
     logo: abs('/brand/avvvs-since-1921.svg'),
     email: CLINIC.email,
     telephone: phones[0],

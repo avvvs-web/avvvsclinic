@@ -7,7 +7,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { fmtWhen, rupees, validateConsult, type ConsultInput, type OnlineDoctor } from '@/lib/consult';
 import { CLINIC, tel } from '@/lib/site';
 import { trackBooking } from '@/lib/track';
+import { ModeSwitch } from './ModeSwitch';
 import { SlotPicker, useSlots } from './SlotPicker';
+import { useBookingMotion } from './useBookingMotion';
 
 type Step = 0 | 1 | 2;
 const STEPS = ['Doctor', 'Time', 'Your details'];
@@ -23,8 +25,10 @@ export function ConsultForm({ doctors }: { doctors: OnlineDoctor[] }) {
   const [state, setState] = useState<'idle' | 'sending' | 'failed' | 'taken'>('idle');
   const started = useRef(Date.now());
   const top = useRef<HTMLDivElement>(null);
+  const body = useRef<HTMLDivElement>(null);
   const { days, failed, reload } = useSlots(c.doctor);
   const doctor = doctors.find((d) => d.slug === c.doctor);
+  useBookingMotion(top, body, step);
 
   const set = <K extends keyof ConsultInput>(k: K, v: ConsultInput[K]) => { setC((o) => ({ ...o, [k]: v })); setErr((e) => ({ ...e, [k]: undefined })); };
   const go = (to: Step) => {
@@ -58,18 +62,19 @@ export function ConsultForm({ doctors }: { doctors: OnlineDoctor[] }) {
   return (
     <div className="bk" ref={top}>
       <div className="bk-top">
-        <p className="choice"><Link href="/book">Visit the clinic</Link><Link href="/consult" aria-current="page">Online by video</Link></p>
+        <ModeSwitch current={1} />
         <h1 className="t-1">Online consultation.</h1>
         <p className="lede">See one of the clinic’s doctors by video, from wherever you are. Pick a time and the Google Meet link arrives by email.</p>
       </div>
 
-      <ol className="bk-steps" aria-label="Steps">
+      <ol className="bk-steps" aria-label="Steps" style={{ "--step": Math.min(step, STEPS.length - 1) } as React.CSSProperties}>
         {STEPS.map((s, i) => <li key={s} className={i < step ? 'is-done' : i === step ? 'is-on' : ''} aria-current={i === step ? 'step' : undefined}>{s}</li>)}
       </ol>
 
       <div className="bk-card">
         <form id="consult-form" noValidate onSubmit={(e) => { e.preventDefault(); next(); }}>
           <div className="hp" aria-hidden="true"><label>Website <input name="website" tabIndex={-1} autoComplete="off" /></label></div>
+          <div className="bk-body" ref={body}><div>
           <div className="bk-pane" key={step}>
             {step === 0 && (
               <>
@@ -118,6 +123,7 @@ export function ConsultForm({ doctors }: { doctors: OnlineDoctor[] }) {
               </>
             )}
           </div>
+          </div></div>
 
           <div className="bk-nav">
             {step > 0 ? <button type="button" className="bk-back" onClick={() => go((step - 1) as Step)}>Back</button> : <span />}
@@ -127,7 +133,7 @@ export function ConsultForm({ doctors }: { doctors: OnlineDoctor[] }) {
           </div>
         </form>
       </div>
-      <p className="small" style={{ textAlign: 'center', marginTop: 18 }}>Rather come in? <Link href="/book">Book a visit to the clinic</Link>, or call <a href={tel(CLINIC.phones[0])}>{CLINIC.phones[0]}</a>.</p>
+      <p className="small bk-after" style={{ textAlign: 'center', marginTop: 18 }}>Rather come in? <Link href="/book">Book a visit to the clinic</Link>, or call <a href={tel(CLINIC.phones[0])}>{CLINIC.phones[0]}</a>.</p>
     </div>
   );
 }

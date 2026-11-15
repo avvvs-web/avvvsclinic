@@ -15,7 +15,7 @@ const LAYOUT: Tile[] = [
   { slug: 'headache-clinic', size: 'third', img: '/photos/headache.jpg', pos: '42% 40%' },
   { slug: 'obesity-lifestyle-clinic', size: 'third', img: '/photos/lifestyle.jpg', pos: '30% 50%' },
   { slug: 'infertility-clinic', size: 'third', img: '/photos/infertility.jpg', pos: '62% 50%' },
-  { slug: REVIVE.slug, size: 'full', img: '/photos/hairoil.jpg', pos: '50% 62%' },
+  { slug: REVIVE.slug, size: 'full', img: '/photos/revive.jpg', pos: '40% 45%' },
 ];
 
 export function ClinicTiles({ exclude }: { exclude?: string }) {

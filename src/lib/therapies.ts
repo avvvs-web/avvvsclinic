@@ -20,12 +20,12 @@ export interface Therapy {
 
 export const THERAPIES: Therapy[] = [
   {
-    slug: 'pizhichil', img: '/photos/abhyanga.jpg', pos: '60% 50%', name: 'Pizhichil', ml: 'പിഴിച്ചിൽ',
+    slug: 'pizhichil', img: '/photos/pizhichil.jpg', pos: '50% 60%', name: 'Pizhichil', ml: 'പിഴിച്ചിൽ',
     what: 'A Kerala speciality in which warm medicated oil is poured over the body in a continuous stream while therapists massage in rhythm.',
     how: 'Cloths soaked in lukewarm oil are squeezed over the body by two or more therapists working in step.',
   },
   {
-    slug: 'shirodhara', img: '/photos/shirodhara.jpg', pos: '28% 50%', name: 'Shirodhara', ml: 'ശിരോധാര',
+    slug: 'shirodhara', img: '/photos/shirodhara-dhara.jpg', pos: '18% 50%', name: 'Shirodhara', ml: 'ശിരോധാര',
     what: 'A steady, unbroken stream of warm medicated liquid, usually oil or kashaya, poured gently over the forehead.',
     how: 'You lie still as a gentle, continuous stream flows across your forehead from a vessel suspended above.',
   },
@@ -48,6 +48,12 @@ export const THERAPIES: Therapy[] = [
     slug: 'udwarthana', img: '/photos/udwarthana.jpg', pos: '60% 50%', name: 'Udwarthana', ml: 'ഉദ്വർത്തനം',
     what: 'A brisk massage using warm medicinal powder, applied in firm, mostly upward strokes.',
     how: 'It is used to exfoliate the skin, improve skin texture and support body care.',
+  },
+  {
+    // added 2026-11-15 with the clinic's photograph; the wording is a plain account of the procedure, for the doctors to confirm
+    slug: 'kati-vasti', img: '/photos/kati-vasti.jpg', pos: '50% 62%', name: 'Kati Vasti', ml: 'കടിവസ്തി',
+    what: 'A treatment for the lower back in which warm medicated oil is held over the painful area inside a ring of dough.',
+    how: 'You lie face down while a ring of black gram dough is sealed onto the lower back and filled with warm oil, which is gently replenished to keep it warm.',
   },
   {
     slug: 'utsadana', name: 'Utsadana', ml: 'ഉത്സാദനം',
@@ -126,7 +132,7 @@ export const THERAPIES: Therapy[] = [
   },
 ];
 
-/** The six classical therapies the site has photographs of. */
+/** The classical therapies the site has photographs of. */
 export const PICTURED = THERAPIES.filter((t) => t.img);
 
 export const therapyBySlug = (slug: string) => THERAPIES.find((t) => t.slug === slug);

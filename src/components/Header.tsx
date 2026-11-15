@@ -21,7 +21,7 @@ const ELSEWHERE = [
 
 const Ext = () => <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 1.5h5.5V7M8.5 1.5 1.5 8.5" /></svg>;
 
-/** A thin, translucent bar in the manner of a product site: the mark, five places, and Book. */
+/** A thin, translucent bar in the manner of a product site: the mark, five places, and a button to book an appointment. */
 export function Header() {
   const bar = useRef<HTMLElement>(null);
   const path = usePathname() || '/';
@@ -65,7 +65,10 @@ export function Header() {
           {ELSEWHERE.map((n) => <li key={n.href}><a className="nav-ext" href={n.href} rel="noopener">{n.label}<Ext /></a></li>)}
         </ul>
         <div className="nav-end">
-          <Link className="btn btn-sm" href="/book">Book</Link>
+          <Link className="btn btn-sm nav-cta" href="/book">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2.5" /><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" strokeLinecap="round" /></svg>
+            <span><span className="nav-cta-more">Book </span>appointment</span>
+          </Link>
           <button type="button" className="nav-toggle" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="menu" onClick={() => setOpen((o) => !o)}>
             <i /><i />
           </button>

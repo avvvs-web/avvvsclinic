@@ -19,7 +19,7 @@ const REVIVE_PAGE: Clinic = {
     { h: 'Treatments', p: `${REVIVE.treatments.join(' and ')}. Treatment plans are chosen after a consultation.` },
   ],
   therapies: REVIVE.therapies,
-  image: { src: '/photos/hairoil.jpg', alt: 'A bottle of herbal hair oil beside hibiscus, curry leaves and a wooden comb', position: '50% 62%' },
+  image: { src: '/photos/revive.jpg', alt: 'A therapist applying a turmeric face pack with a skin-care device as a woman rests on a treatment bed', position: '40% 50%' },
   faq: [
     { q: 'What is Gloveda Revive?', a: REVIVE.short },
     { q: 'What does Gloveda Revive treat?', a: 'A wide range of skin and hair concerns, combining traditional Ayurvedic formulations with modern skin and hair care technologies. Treatment plans are chosen after a consultation.' },

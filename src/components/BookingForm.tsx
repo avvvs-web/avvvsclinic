@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { animate, stagger } from 'animejs';
 import { CARE, SLOTS, careById, fmtDay, nextDays, validate, type Booking } from '@/lib/booking';
 import { CLINIC, tel } from '@/lib/site';
 import { trackBooking } from '@/lib/track';
+import { ModeSwitch } from './ModeSwitch';
+import { DayPicker, dayShort } from './DayPicker';
+import { useBookingMotion } from './useBookingMotion';
 
 type Step = 0 | 1 | 2;
 const STEPS = ['Care', 'Day and time', 'Your details'];
@@ -26,21 +28,11 @@ export function BookingForm() {
   const [state, setState] = useState<'idle' | 'sending' | 'done' | 'failed'>('idle');
   const [days, setDays] = useState<string[]>([]);
   const started = useRef(Date.now());
-  const pane = useRef<HTMLDivElement>(null);
   const top = useRef<HTMLDivElement>(null);
+  const body = useRef<HTMLDivElement>(null);
 
   useEffect(() => setDays(nextDays(21)), []);
-
-  // the form mounts after the page's choreography, so it brings itself in
-  useEffect(() => {
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    animate('.bk-top > *, .bk-steps, .bk-card', { opacity: [0, 1], y: [24, 0], duration: 1200, delay: stagger(80, { start: 100 }), ease: 'outExpo' });
-  }, []);
-  useEffect(() => {
-    const el = pane.current;
-    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    animate(el.querySelectorAll('.opt, .day, .field'), { opacity: [0, 1], y: [10, 0], duration: 600, delay: stagger(25), ease: 'outExpo' });
-  }, [step, days.length]);
+  useBookingMotion(top, body, step);
 
   const set = <K extends keyof Booking>(k: K, v: Booking[K]) => { setB((o) => ({ ...o, [k]: v })); setErr((e) => ({ ...e, [k]: undefined })); };
   const toTop = () => {
@@ -90,19 +82,20 @@ export function BookingForm() {
   return (
     <div className="bk" ref={top}>
       <div className="bk-top">
-        <p className="choice"><Link href="/book" aria-current="page">Visit the clinic</Link><Link href="/consult">Online by video</Link></p>
+        <ModeSwitch current={0} />
         <h1 className="t-1">Book a consultation.</h1>
         <p className="lede">Tell us what you need and when you would like to come. The clinic calls back to confirm your appointment.</p>
       </div>
 
-      <ol className="bk-steps" aria-label="Steps">
+      <ol className="bk-steps" aria-label="Steps" style={{ "--step": Math.min(step, STEPS.length - 1) } as React.CSSProperties}>
         {STEPS.map((s, i) => <li key={s} className={i < step ? 'is-done' : i === step ? 'is-on' : ''} aria-current={i === step ? 'step' : undefined}>{s}</li>)}
       </ol>
 
       <div className="bk-card">
         <form id="bk-form" noValidate onSubmit={(e) => { e.preventDefault(); next(); }}>
           <div className="hp" aria-hidden="true"><label>Website <input name="website" tabIndex={-1} autoComplete="off" /></label></div>
-          <div className="bk-pane" key={step} ref={pane}>
+          <div className="bk-body" ref={body}><div>
+          <div className="bk-pane" key={step}>
             {step === 0 && (
               <>
                 <h2>What would you like help with?</h2>
@@ -122,20 +115,12 @@ export function BookingForm() {
             {step === 1 && (
               <>
                 <h2>When would you like to come?</h2>
-                <fieldset style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
-                  <legend className="bk-label">A preferred day</legend>
-                  <div className="days">
-                    {days.map((d) => (
-                      <label key={d} className="day">
-                        <input type="radio" name="date" value={d} checked={b.date === d} onChange={() => set('date', d)} aria-label={fmtDay(d)} />
-                        <span>{fmtDay(d, { weekday: 'short' })}</span><b>{fmtDay(d, { day: 'numeric' })}</b><span>{fmtDay(d, { month: 'short' })}</span>
-                      </label>
-                    ))}
-                  </div>
+                <div>
+                  <DayPicker dates={days} value={b.date} onChange={(d) => set('date', d)} label="A preferred day" name="date" />
                   {err.date && <p className="err" role="alert">{err.date}</p>}
-                </fieldset>
+                </div>
                 <fieldset className="slots">
-                  <legend className="bk-label">A time of day</legend>
+                  <legend className="bk-label">{b.date ? <>A time of day on {dayShort(b.date)}</> : 'A time of day'}</legend>
                   {SLOTS.map((s) => (
                     <label key={s.id} className="opt"><input type="radio" name="slot" value={s.id} checked={b.slot === s.id} onChange={() => set('slot', s.id)} /><b>{s.label}</b></label>
                   ))}
@@ -166,6 +151,7 @@ export function BookingForm() {
               </>
             )}
           </div>
+          </div></div>
 
           <div className="bk-nav">
             {step > 0 ? <button type="button" className="bk-back" onClick={() => go((step - 1) as Step)}>Back</button> : <span />}
@@ -182,7 +168,7 @@ export function BookingForm() {
           {b.date && <span>{fmtDay(b.date)}{slot ? `, ${slot.toLowerCase()}` : ''}</span>}
         </p>
       )}
-      <p className="small" style={{ textAlign: 'center', marginTop: 18 }}>Prefer to talk? Call <a href={tel(CLINIC.phones[0])}>{CLINIC.phones[0]}</a> or <a href={tel(CLINIC.phones[1])}>{CLINIC.phones[1]}</a>.</p>
+      <p className="small bk-after" style={{ textAlign: 'center', marginTop: 18 }}>Prefer to talk? Call <a href={tel(CLINIC.phones[0])}>{CLINIC.phones[0]}</a> or <a href={tel(CLINIC.phones[1])}>{CLINIC.phones[1]}</a>.</p>
     </div>
   );
 }

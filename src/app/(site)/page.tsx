@@ -29,7 +29,7 @@ export default async function Home() {
         <div className="hero-stage" data-hero>
           <div className="hero-frame">
             <div className="hero-pic">
-              <Image src="/photos/shirodhara.jpg" alt="Warm oil streaming from a brass vessel onto the forehead during Shirodhara" fill priority sizes="100vw" />
+              <Image src="/photos/shirodhara-dhara.jpg" alt="Warm oil streaming from a brass vessel onto the forehead during Shirodhara" fill priority sizes="100vw" style={{ objectPosition: '12% 50%' }} />
               <div className="hero-caption">
                 <p>Shirodhara</p>
                 <span lang="ml">ശിരോധാര</span>
