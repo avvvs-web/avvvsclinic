@@ -47,7 +47,13 @@ export function Motion() {
   useEffect(() => {
     if (!document.documentElement.classList.contains('anim')) return;
     const all = <T extends HTMLElement = HTMLElement>(s: string) => [...document.querySelectorAll<T>(s)];
-    const scope = createScope({ root: document.body }).add(() => {
+    // DOM changes first (splitting the sentences into words), then, once the browser has laid the
+    // page out, the scroll triggers, which read positions: reading straight after writing would
+    // force an extra synchronous layout (Lighthouse's "forced reflow")
+    const splits = all('[data-fill]').map((el) => splitText(el, { words: { class: 'w' } }));
+    let scope: ReturnType<typeof createScope> | undefined;
+    let frame = requestAnimationFrame(() => { frame = requestAnimationFrame(build); });
+    function build() { scope = createScope({ root: document.body }).add(() => {
       all('[data-reveal]').forEach((el) => {
         const now = el.hasAttribute('data-now');
         animate(el, {
@@ -81,11 +87,12 @@ export function Motion() {
         });
       }
 
-      all('[data-fill]').forEach((el) => {
-        const { words } = splitText(el, { words: { class: 'w' } });
+      // words start at half strength, not fainter: grey text must still meet the 3:1 contrast that
+      // large text needs (0.5 of the ink on white is about 3.3:1)
+      splits.forEach(({ $target, words }) => {
         animate(words, {
-          opacity: [0.18, 1], ease: 'linear', delay: stagger(30),
-          autoplay: onScroll({ target: el, enter: '82% top', leave: '45% bottom', sync: 0.3 }),
+          opacity: [0.5, 1], ease: 'linear', delay: stagger(30),
+          autoplay: onScroll({ target: $target as HTMLElement, enter: '82% top', leave: '45% bottom', sync: 0.3 }),
         });
       });
 
@@ -101,13 +108,13 @@ export function Motion() {
         animate(n, { v: to, duration: 1800, ease: 'outQuart', modifier: utils.round(0), onUpdate: () => { el.textContent = String(n.v); },
           autoplay: onScroll({ target: el, enter: '92% top', repeat: false }) });
       });
-    });
+    }); }
 
     // nothing may stay hidden: anything still invisible well after it should have arrived is shown
     const safety = window.setTimeout(() => all('[data-reveal], [data-stagger] > *').forEach((el) => {
       if (el.getBoundingClientRect().top < window.innerHeight && getComputedStyle(el).opacity === '0') { el.style.opacity = '1'; el.style.transform = 'none'; }
     }), 3500);
-    return () => { window.clearTimeout(safety); scope.revert(); };
+    return () => { cancelAnimationFrame(frame); window.clearTimeout(safety); scope?.revert(); splits.forEach((s) => s.revert()); };
   }, [path]);
 
   return null;

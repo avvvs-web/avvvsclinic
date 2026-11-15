@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next';
 import { PHASE_DEVELOPMENT_SERVER } from 'next/constants';
+import path from 'node:path';
 
 // The clinic's public address, fixed at build time. NEXT_PUBLIC_SITE_URL wins when set (the final
 // domain, https://clinic.avvvs.com); otherwise Vercel's production domain. Canonicals, hreflang,
@@ -16,6 +17,12 @@ export default function config(phase: string): NextConfig {
     // PGlite (the local admin database) ships its own WebAssembly; keep it out of the server bundle
     serverExternalPackages: ['@electric-sql/pglite'],
     experimental: { inlineCss: true },
+    // Next ships polyfills for Array#at, Object.hasOwn and the like to every browser; the browsers in
+    // package.json "browserslist" all have them, so the client bundle uses an empty module instead
+    webpack(cfg, { isServer, webpack }) {
+      if (!isServer) cfg.plugins.push(new webpack.NormalModuleReplacementPlugin(/[\\/]build[\\/]polyfills[\\/]polyfill-module(\.js)?$/, path.resolve(__dirname, 'src/lib/no-polyfills.js')));
+      return cfg;
+    },
     // the dev server writes elsewhere, so a production build can run beside it
     distDir: phase === PHASE_DEVELOPMENT_SERVER ? '.next-dev' : '.next',
     async redirects() {

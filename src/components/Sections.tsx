@@ -22,7 +22,7 @@ export async function ClinicTiles({ exclude }: { exclude?: string }) {
         const cls = t.size === 'wide' ? ' tile-wide' : t.size === 'full' ? ' tile-full' : t.size === 'half' ? ' tile-half' : '';
         return (
           <Link key={t.slug} href={`/clinics/${t.slug}`} className={`tile has-img${cls}`}>
-            <span className="tile-img"><Image src={pic.src} alt="" fill sizes={t.size === 'third' ? '(min-width: 1000px) 33vw, 100vw' : '(min-width: 1000px) 66vw, 100vw'} style={{ objectPosition: pic.position }} /></span>
+            <span className="tile-img"><Image src={pic.src} alt="" fill sizes={t.size === 'third' ? '(min-width: 1000px) 33vw, calc(100vw - 44px)' : '(min-width: 1000px) 66vw, calc(100vw - 44px)'} style={{ objectPosition: pic.position }} /></span>
             <span className="tile-copy">
               <h3>{name}</h3>
               <p>{text}</p>

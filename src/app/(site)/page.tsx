@@ -29,7 +29,7 @@ export default async function Home() {
         <div className="hero-stage" data-hero>
           <div className="hero-frame">
             <div className="hero-pic">
-              <Image src={hero.src} alt={hero.alt} fill priority sizes="100vw" style={{ objectPosition: hero.position }} />
+              <Image src={hero.src} alt={hero.alt} fill priority fetchPriority="high" sizes="(max-width: 760px) calc(100vw - 44px), 100vw" style={{ objectPosition: hero.position }} />
               <div className="hero-caption">
                 <p>Shirodhara</p>
                 <span lang="ml">ശിരോധാര</span>
