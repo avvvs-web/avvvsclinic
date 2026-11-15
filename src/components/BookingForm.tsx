@@ -146,7 +146,7 @@ export function BookingForm() {
                   </fieldset>
                   <Field id="message" label="Anything the doctor should know?" optional area value={b.message} err={err.message} onChange={(v) => set('message', v)} wide />
                 </div>
-                <p className="small">Your details are used only to arrange your appointment. Please bring medical reports to the consultation rather than sending them here.</p>
+                <p className="small">Your details are used only to arrange your appointment. Please bring medical reports to the consultation rather than sending them here. <Link href="/privacy" target="_blank">How we use your details</Link></p>
                 {state === 'failed' && <p className="err" role="alert">The request could not be sent. Please call {CLINIC.phones[0]} or email {CLINIC.email}.</p>}
               </>
             )}

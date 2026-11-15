@@ -16,7 +16,7 @@ export default function Privacy() {
   return (
     <LegalPage
       title="Privacy Policy"
-      updated="8 November 2026"
+      updated="15 November 2026"
       intro={<p>This policy explains what {CLINIC.name} collects through clinic.avvvs.com, why, who it is shared with, and the choices and rights you have. It is a draft awaiting legal review.</p>}
       sections={[
         { id: 'who', title: 'Who we are', body: <>
@@ -26,12 +26,14 @@ export default function Privacy() {
         { id: 'collect', title: 'What we collect', body: <>
           <p><b>When you book a consultation</b>, the form asks for the care you are looking for, a preferred day and time of day, your name and phone number, and, if you choose to give them, your email address, age, whether you have visited before, and a note for the doctor.</p>
           <p><b>When you book an online consultation</b>, the form asks for the doctor and time you chose, your name, phone number, email address and, if you give them, your age and a note for the doctor. The appointment is stored in the clinic’s database and added to the clinic’s Google Calendar with a Google Meet link; you and the doctor are invited by email. The clinic does not record video consultations.</p>
+          <p><b>When you pay online</b> (once online payment is switched on), the payment gateway collects your payment details directly. The clinic receives only the amount, the payment’s status and reference, and the method used (for example “UPI”); it never sees or stores your card number, bank login or UPI PIN.</p>
           <p>A note for the doctor may describe your health. Please share only what helps the clinic arrange your appointment, and bring medical reports to the consultation rather than sending them through the website.</p>
           <p><b>When you browse</b>, the website’s host keeps short-lived technical logs (such as IP address and browser type) to run and secure the site. With your consent, Google Analytics and the Meta Pixel also collect usage information, as described under Cookies below.</p>
         </> },
         { id: 'use', title: 'How we use it', body: <>
           <ul>
             <li>To arrange your appointment: the clinic calls or writes to you to confirm a time.</li>
+            <li>To take payment for an online consultation, give refunds, and keep the accounts the law requires.</li>
             <li>To reply to you, if you emailed or called.</li>
             <li>With your consent, to understand how the website is used and to measure our advertising.</li>
             <li>To keep the website secure and to meet legal obligations.</li>
@@ -48,6 +50,7 @@ export default function Privacy() {
             <li><b>Our website host</b> (Vercel), which runs the site and keeps short technical logs.</li>
             <li><b>Google</b> (Calendar and Meet), which holds the calendar event and runs the video call for an online consultation.</li>
             <li><b>Our database provider</b> (Neon), which stores online consultation appointments.</li>
+            <li><b>Our payment gateway</b>, once online payment is switched on, which processes your payment and refunds and must keep payment records under Reserve Bank of India rules.</li>
             <li><b>Google</b> (Analytics) and <b>Meta</b> (Pixel), only if you allow them. They never receive what you type in the booking form.</li>
           </ul>
           <p>Some of these providers process data outside India. We share only what each needs to provide its service.</p>
@@ -61,7 +64,7 @@ export default function Privacy() {
           <p>Optional tags do not load until you allow them. You can change your choice at any time in <CookieSettingsLink label="cookie settings" />.</p>
         </> },
         { id: 'keep', title: 'How long we keep it', body: <>
-          <p>Online consultation appointments are kept for as long as needed for your care and the clinic’s records. Booking requests are kept in the clinic’s email for as long as needed to arrange and follow up your care, and then deleted, unless the law requires us to keep them longer. Analytics data is kept for 14 months.</p>
+          <p>Online consultation appointments are kept for as long as needed for your care and the clinic’s records. Booking requests are kept in the clinic’s email for as long as needed to arrange and follow up your care, and then deleted, unless the law requires us to keep them longer. Payment and refund records are kept for 8 years, as tax law requires. Analytics data is kept for 14 months.</p>
         </> },
         { id: 'rights', title: 'Your rights', body: <>
           <p>Under the Digital Personal Data Protection Act, 2023, you can ask us for a summary of the personal data we hold about you, ask us to correct, complete or erase it, withdraw your consent, and nominate someone to exercise these rights for you. Write to {mail} or call {CLINIC.phones[0]}; we reply within 30 days.</p>
@@ -74,10 +77,10 @@ export default function Privacy() {
           <p>Appointments for a child should be booked by a parent or guardian, who gives consent on the child’s behalf.</p>
         </> },
         { id: 'security', title: 'Security', body: <>
-          <p>The website uses encrypted connections (HTTPS), and booking requests are sent to the clinic over encrypted email. No method is perfectly secure, but we take reasonable care to protect your data.</p>
+          <p>The website uses encrypted connections (HTTPS), and booking requests are sent to the clinic over encrypted email. Only the clinic’s staff who arrange appointments can see bookings, through a password-protected admin. No method is perfectly secure, but we take reasonable care to protect your data. If a breach affects your personal data, we will tell you and the Data Protection Board of India as the law requires.</p>
         </> },
         { id: 'changes', title: 'Changes to this policy', body: <>
-          <p>We will update this page when our practices change, and change the date at the top. See also our <Link href="/terms">Terms of use</Link>.</p>
+          <p>We will update this page when our practices change, and change the date at the top. See also our <Link href="/terms">Terms of use</Link> and <Link href="/refunds">Fees, cancellations and refunds</Link>.</p>
         </> },
       ]}
     />

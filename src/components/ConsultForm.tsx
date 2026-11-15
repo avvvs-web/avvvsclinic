@@ -116,7 +116,7 @@ export function ConsultForm({ doctors }: { doctors: OnlineDoctor[] }) {
                 </div>
                 <label className={`consent${err.consent ? ' has-error' : ''}`}>
                   <input type="checkbox" checked={c.consent} onChange={(e) => set('consent', e.target.checked)} />
-                  <span>I agree to consult the doctor online by video. I understand the doctor cannot examine me in person and may ask me to visit the clinic, and that this is not for emergencies. <Link href="/terms#online" target="_blank">Terms</Link> · <Link href="/privacy" target="_blank">Privacy</Link></span>
+                  <span>I agree to consult the doctor online by video. I understand the doctor cannot examine me in person and may ask me to visit the clinic, and that this is not for emergencies. <Link href="/terms#online" target="_blank">Terms</Link> · <Link href="/privacy" target="_blank">Privacy</Link>{doctor.feePaise ? <> · <Link href="/refunds" target="_blank">Refunds</Link></> : null}</span>
                 </label>
                 {err.consent && <p className="err" role="alert">{err.consent}</p>}
                 {state === 'failed' && <p className="err" role="alert">The booking could not be made. Please try again, or call {CLINIC.phones[0]}.</p>}

@@ -14,7 +14,7 @@ export default function Terms() {
   return (
     <LegalPage
       title="Terms of use"
-      updated="8 November 2026"
+      updated="15 November 2026"
       intro={<p>These terms apply when you use clinic.avvvs.com, the website of {CLINIC.name}, run by {CLINIC.legal} (AVVVS), Kozhikode. By using the site you accept them. They are a draft awaiting legal review.</p>}
       sections={[
         { id: 'advice', title: 'Not medical advice', body: <>
@@ -31,7 +31,8 @@ export default function Terms() {
         { id: 'online', title: 'Online consultations', body: <>
           <p>An online consultation is a video call with one of the clinic’s doctors on Google Meet, booked for a time you choose. It is confirmed when you receive the confirmation email. You can change or cancel it up to two hours before it starts from the link in that email; after that, please call the clinic.</p>
           <p>On a video call the doctor cannot examine you in person. The doctor decides whether your concern can be handled online, and may ask you to visit the clinic or another doctor instead. Please be truthful about who you are and about your health, join from a private place, and do not record the call without the doctor’s agreement.</p>
-          <p>Online consultations are not for emergencies. If a fee applies, it is shown before you book, and the clinic will tell you how to pay it.</p>
+          <p>Online consultations are not for emergencies. If a fee applies, it is shown before you book. Until online payment is switched on, the clinic tells you how to pay it; after that, you pay when you book. Cancellations and refunds follow our <Link href="/refunds">Fees, cancellations and refunds</Link> policy.</p>
+          <p>The doctor may advise you, and may prescribe within what the rules for teleconsultation allow. Some medicines cannot be prescribed over a video call, and the doctor may need to see you first. Each doctor practises under their own registration, which the clinic will give you on request.</p>
         </> },
         { id: 'care', title: 'Treatment', body: <>
           <p>Any therapy or treatment is recommended by a doctor after a consultation, and depends on your health and history. Results vary from person to person, and the clinic does not promise any particular outcome. Fees and treatment details are explained at the clinic.</p>
@@ -52,7 +53,7 @@ export default function Terms() {
           <p>These terms are governed by the laws of India. Disputes are subject to the courts at Kozhikode, Kerala.</p>
         </> },
         { id: 'changes', title: 'Changes and contact', body: <>
-          <p>We may update these terms; the date at the top shows the latest version. Questions: <a href={`mailto:${CLINIC.email}`}>{CLINIC.email}</a>. See also our <Link href="/privacy">Privacy Policy</Link>.</p>
+          <p>We may update these terms; the date at the top shows the latest version. Questions: <a href={`mailto:${CLINIC.email}`}>{CLINIC.email}</a>. See also our <Link href="/privacy">Privacy Policy</Link> and <Link href="/refunds">Fees, cancellations and refunds</Link>.</p>
         </> },
       ]}
     />

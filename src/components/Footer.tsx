@@ -52,6 +52,7 @@ export function Footer() {
           <ul>
             <li><Link href="/privacy">Privacy</Link></li>
             <li><Link href="/terms">Terms</Link></li>
+            <li><Link href="/refunds">Refunds</Link></li>
             <li><CookieSettingsLink label="Cookie settings" /></li>
             {CLINIC.social.map((s) => <li key={s.label}><a href={s.href} rel="noopener">{s.label}</a></li>)}
           </ul>
