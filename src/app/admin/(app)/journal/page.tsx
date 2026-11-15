@@ -3,16 +3,18 @@ import { sql, ensureSchema } from '@/lib/db';
 import { requireUser } from '@/lib/auth';
 import { clinicName, type PostRow } from '@/lib/content';
 import { POSTS, fmtDate } from '@/lib/journal';
-import { newPost } from '../../actions';
+import { editBuiltInPost, newPost } from '../../actions';
 
 export const metadata = { title: 'Journal' };
 
 export default async function Journal() {
   await requireUser();
   await ensureSchema();
-  const rows = (await sql()`
+  const all = (await sql()`
     SELECT p.*, u.name AS author_name FROM clinic_posts p LEFT JOIN clinic_users u ON u.id = p.author_id
     ORDER BY p.updated_at DESC`) as unknown as PostRow[];
+  const rows = all.filter((p) => !p.builtin_edit);
+  const edits = new Map(all.filter((p) => p.builtin_edit).map((p) => [p.slug, p]));
   return (
     <div className="ad-page">
       <div className="ad-head">
@@ -47,8 +49,26 @@ export default async function Journal() {
 
       <section className="ad-builtin">
         <h2>Built into the site</h2>
-        <p className="ad-muted">These articles are part of the site&rsquo;s code, so a developer changes them.</p>
-        <ul>{POSTS.map((p) => <li key={p.slug}><a href={`/journal/${p.slug}`} target="_blank" rel="noopener">{p.title}</a> <span className="ad-muted">· {p.kind}</span></li>)}</ul>
+        <p className="ad-muted">Edit one to change any of its text, images or questions; the Journal keeps showing the original until you publish.</p>
+        <table className="ad-table">
+          <thead><tr><th>Title</th><th>Section</th><th>Text</th><th /></tr></thead>
+          <tbody>
+            {POSTS.map((p) => {
+              const e = edits.get(p.slug);
+              return (
+                <tr key={p.slug}>
+                  <td><b>{e?.status === 'published' ? e.title : p.title}</b></td>
+                  <td className="ad-muted">{p.kind}</td>
+                  <td>{!e ? <span className="ad-muted">Original</span> : e.status === 'published' ? <span className="ad-pill ad-pill-published">Edited</span> : <span className="ad-pill ad-pill-draft">Edit in draft</span>}</td>
+                  <td className="ad-row-actions">
+                    <form action={editBuiltInPost.bind(null, p.slug)}><button className="ad-link">Edit</button></form>
+                    <a href={`/journal/${p.slug}`} target="_blank" rel="noopener">View</a>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </section>
     </div>
   );

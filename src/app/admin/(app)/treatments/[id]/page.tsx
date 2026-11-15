@@ -17,6 +17,7 @@ export default async function EditTreatment({ params }: { params: Promise<{ id: 
     <TreatmentEditor
       id={r.id}
       status={r.status}
+      builtIn={!!r.builtin_edit}
       clinics={CLINIC_SLUGS.map((s) => ({ slug: s, name: clinicName(s) }))}
       linked={linked}
       initial={{

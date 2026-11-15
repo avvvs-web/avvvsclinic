@@ -6,8 +6,8 @@ import { checkClaims, slugify } from '@/lib/claims';
 import { saveTreatment, deleteTreatment, type TreatmentInput } from '../../../actions';
 import { ImagePicker } from '../../../ImagePicker';
 
-export function TreatmentEditor({ id, initial, status: startStatus, clinics, linked }: {
-  id: number; initial: TreatmentInput; status: string;
+export function TreatmentEditor({ id, initial, status: startStatus, clinics, linked, builtIn = false }: {
+  id: number; initial: TreatmentInput; status: string; builtIn?: boolean;
   clinics: { slug: string; name: string }[]; linked: { id: number; title: string; status: string }[];
 }) {
   const [d, setD] = useState<TreatmentInput>(initial);
@@ -51,20 +51,25 @@ export function TreatmentEditor({ id, initial, status: startStatus, clinics, lin
         <div className="ad-actions">
           <button type="button" className="ad-btn ad-btn-quiet" disabled={pending} onClick={() => save('keep')}>{status === 'published' ? 'Save changes' : 'Save draft'}</button>
           {status === 'published'
-            ? <button type="button" className="ad-btn ad-btn-quiet" disabled={pending} onClick={() => { if (confirm('Take this treatment off the site? It becomes a draft again.')) save('unpublish'); }}>Unpublish</button>
-            : <button type="button" className="ad-btn" disabled={pending} onClick={() => save('publish')}>Publish</button>}
+            ? <button type="button" className="ad-btn ad-btn-quiet" disabled={pending} onClick={() => { if (confirm(builtIn ? 'Unpublish your changes? The site shows the original wording again; your edit is kept as a draft.' : 'Take this treatment off the site? It becomes a draft again.')) save('unpublish'); }}>Unpublish</button>
+            : <button type="button" className="ad-btn" disabled={pending} onClick={() => save('publish')}>{builtIn ? 'Publish changes' : 'Publish'}</button>}
         </div>
       </div>
-      {(msg.error || msg.ok) && <p className={`ad-note ${msg.error ? 'ad-note-error' : 'ad-note-ok'}`} role="status">{msg.error || msg.ok}{status === 'published' && msg.ok && <> <a href={`/therapies#${slug}`} target="_blank" rel="noopener">View it</a></>}</p>}
+      {builtIn && <p className="ad-note" role="note">This therapy is built into the site. {status === 'published' ? 'Your wording and photograph are live.' : 'The site shows the original until you publish your changes.'} Which clinics it appears under is set on the <Link href="/admin/clinics">Clinics</Link> page.</p>}
+      {(msg.error || msg.ok) && <p className={`ad-note ${msg.error ? 'ad-note-error' : 'ad-note-ok'}`} role="status">{msg.error || msg.ok}{status === 'published' && msg.ok && <> <a href={builtIn ? `/therapies/${slug}` : `/therapies#${slug}`} target="_blank" rel="noopener">View it</a></>}</p>}
 
       <div className="ad-two">
         <div className="ad-stack">
           <label className="ad-field"><span>Name</span><input className="ad-input-big" value={d.name} onChange={(e) => up({ name: e.target.value })} placeholder="e.g. Kati Vasti" /></label>
           <div className="ad-row2">
             <label className="ad-field"><span>Name in Malayalam <em>(optional)</em></span><input lang="ml" value={d.ml} onChange={(e) => up({ ml: e.target.value })} placeholder="e.g. കടിവസ്തി" /></label>
-            <label className="ad-field"><span>Web address</span>
-              <span className="ad-slug">/therapies#<input value={slug} onChange={(e) => { setSlugTouched(true); up({ slug: slugify(e.target.value) || e.target.value.toLowerCase() }); }} placeholder="from-the-name" /></span>
-            </label>
+            {builtIn ? (
+              <div className="ad-field"><span>Web address</span><span className="ad-muted">/therapies/{slug} (kept, so links keep working)</span></div>
+            ) : (
+              <label className="ad-field"><span>Web address</span>
+                <span className="ad-slug">/therapies#<input value={slug} onChange={(e) => { setSlugTouched(true); up({ slug: slugify(e.target.value) || e.target.value.toLowerCase() }); }} placeholder="from-the-name" /></span>
+              </label>
+            )}
           </div>
           <label className="ad-field"><span>What it is</span>
             <textarea rows={3} value={d.what} onChange={(e) => up({ what: e.target.value })} placeholder="One or two sentences that say what the treatment is. Describe it; do not promise results." />
@@ -73,6 +78,7 @@ export function TreatmentEditor({ id, initial, status: startStatus, clinics, lin
             <textarea rows={3} value={d.how} onChange={(e) => up({ how: e.target.value })} placeholder="What happens during a sitting." />
           </label>
 
+          {!builtIn && <>
           <fieldset className="ad-fieldset">
             <legend>Offered in</legend>
             <p className="ad-muted">The treatment appears on each clinic you tick, and on the therapies page.</p>
@@ -89,6 +95,7 @@ export function TreatmentEditor({ id, initial, status: startStatus, clinics, lin
             <input type="number" min={0} max={999} value={d.sort} onChange={(e) => up({ sort: Number(e.target.value) })} />
             <small className="ad-muted">Lower numbers come first, after the built-in therapies.</small>
           </label>
+          </>}
         </div>
 
         <aside className="ad-stack">
@@ -121,7 +128,9 @@ export function TreatmentEditor({ id, initial, status: startStatus, clinics, lin
               : <ul className="ad-list">{claims.map((c, k) => <li key={k}><b>&ldquo;{c.word}&rdquo;</b> in {c.where}: {c.why}. The clinic makes no outcome claims; consider rewording.</li>)}</ul>}
           </div>
 
-          <button type="button" className="ad-link ad-danger" disabled={pending} onClick={() => { if (confirm('Delete this treatment for good? Articles linked to it keep their text.')) start(async () => { await deleteTreatment(id); }); }}>Delete this treatment</button>
+          {builtIn
+            ? <button type="button" className="ad-link ad-danger" disabled={pending} onClick={() => { if (confirm('Throw away your changes and go back to the original wording and photograph?')) start(async () => { await deleteTreatment(id); }); }}>Go back to the original</button>
+            : <button type="button" className="ad-link ad-danger" disabled={pending} onClick={() => { if (confirm('Delete this treatment for good? Articles linked to it keep their text.')) start(async () => { await deleteTreatment(id); }); }}>Delete this treatment</button>}
         </aside>
       </div>
     </div>

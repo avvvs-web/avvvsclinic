@@ -132,6 +132,12 @@ export function ensureSchema() {
     // the doctor who reviewed an article (their slug); added after launch, so added in place
     await q`ALTER TABLE clinic_posts ADD COLUMN IF NOT EXISTS reviewer TEXT`;
     await q`CREATE TABLE IF NOT EXISTS clinic_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL DEFAULT '')`;
+    // 2026-11-15: a treatment row can be the admin's edit of a built-in therapy (same slug); only rows
+    // marked so replace the built-in one, so an older treatment that happens to share a slug does not
+    await q`ALTER TABLE clinic_treatments ADD COLUMN IF NOT EXISTS builtin_edit BOOLEAN NOT NULL DEFAULT FALSE`;
+    // the same for articles, and the questions an article ends with
+    await q`ALTER TABLE clinic_posts ADD COLUMN IF NOT EXISTS builtin_edit BOOLEAN NOT NULL DEFAULT FALSE`;
+    await q`ALTER TABLE clinic_posts ADD COLUMN IF NOT EXISTS faq JSONB NOT NULL DEFAULT '[]'::jsonb`;
     // ---------- online consultations ----------
     await q`ALTER TABLE clinic_doctors ADD COLUMN IF NOT EXISTS email TEXT NOT NULL DEFAULT ''`;
     await q`ALTER TABLE clinic_doctors ADD COLUMN IF NOT EXISTS online BOOLEAN NOT NULL DEFAULT FALSE`;

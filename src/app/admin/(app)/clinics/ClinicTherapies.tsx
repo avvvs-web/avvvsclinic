@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import Link from 'next/link';
 import { resetBuiltInLinks, setClinicTherapies, type FormState } from '../../actions';
 import { Note } from '../../AdminForms';
 
@@ -25,7 +26,10 @@ export function ClinicTherapies({ clinic, name, therapies, initial }: {
     <section className="ad-card">
       <div className="ad-card-top">
         <h2>{name}</h2>
-        <a className="ad-link" href={`/clinics/${clinic}`} target="_blank" rel="noopener">View</a>
+        <span className="ad-row-actions">
+          <Link className="ad-link" href={`/admin/clinics/${clinic}`}>Edit page text</Link>
+          <a className="ad-link" href={`/clinics/${clinic}`} target="_blank" rel="noopener">View</a>
+        </span>
       </div>
       <p className="ad-muted">{picked.length ? `${picked.length} therapies shown` : 'No therapies shown: the section is hidden on this clinic’s page.'}</p>
       <div className="ad-checks ad-checks-tight">

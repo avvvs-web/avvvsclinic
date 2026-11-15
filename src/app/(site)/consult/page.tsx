@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { ConsultForm } from '@/components/ConsultForm';
 import { Faq, JsonLd } from '@/components/Parts';
+import { onlineBookingOn } from '@/lib/content';
 import { hasDatabase } from '@/lib/db';
 import { canCreateEvents } from '@/lib/google';
 import { breadcrumbLd, medicalPageLd } from '@/lib/ld';
@@ -31,7 +32,7 @@ const FAQ = [
 
 export default async function ConsultPage() {
   const doctors = hasDatabase() ? (await onlineDoctorRows().catch(() => [])).map(toOnlineDoctor) : [];
-  const open = doctors.length > 0 && (await canCreateEvents());
+  const open = doctors.length > 0 && (await onlineBookingOn()) && (await canCreateEvents());
   return (
     <main id="main" className="mist">
       {open ? (

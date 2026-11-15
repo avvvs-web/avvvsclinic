@@ -2,38 +2,30 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { CLINICS, REVIVE, clinicBySlug } from '@/lib/clinics';
 import type { Post } from '@/lib/journal';
-import { getDoctors, getPosts } from '@/lib/content';
+import { clinicTextOverrides, getDoctors, getPosts, photoOverrides } from '@/lib/content';
+import { defaultClinicText } from '@/lib/clinicPages';
+import { TILES } from '@/lib/photos';
 import { CLINIC, tel } from '@/lib/site';
 import { Chevron } from './Parts';
 
-type Tile = { slug: string; size: 'wide' | 'half' | 'third' | 'full'; img?: string; pos?: string };
-
-// The clinics as photographed tiles of three sizes.
-const LAYOUT: Tile[] = [
-  { slug: 'pain-management-clinic', size: 'wide', img: '/photos/pain.jpg', pos: '45% 45%' },
-  { slug: 'pregnancy-postnatal-care-clinic', size: 'third', img: '/photos/mother.jpg', pos: '50% 35%' },
-  { slug: 'headache-clinic', size: 'third', img: '/photos/headache.jpg', pos: '42% 40%' },
-  { slug: 'obesity-lifestyle-clinic', size: 'third', img: '/photos/lifestyle.jpg', pos: '30% 50%' },
-  { slug: 'infertility-clinic', size: 'third', img: '/photos/infertility.jpg', pos: '62% 50%' },
-  { slug: REVIVE.slug, size: 'full', img: '/photos/revive.jpg', pos: '40% 45%' },
-];
-
-export function ClinicTiles({ exclude }: { exclude?: string }) {
+/** The clinics as photographed tiles; photographs and wording can be changed in the admin. */
+export async function ClinicTiles({ exclude }: { exclude?: string }) {
   // on a clinic's own page, three of the others, all the same size
-  const tiles = exclude ? LAYOUT.filter((t) => t.slug !== exclude).slice(0, 3).map((t) => ({ ...t, size: 'third' as const })) : LAYOUT;
+  const tiles = exclude ? TILES.filter((t) => t.slug !== exclude).slice(0, 3).map((t) => ({ ...t, size: 'third' as const })) : TILES;
+  const [photos, texts] = await Promise.all([photoOverrides(), clinicTextOverrides()]);
   return (
     <div className="tiles" data-stagger>
       {tiles.map((t) => {
-        const c = t.slug === REVIVE.slug ? { name: REVIVE.name, lede: 'Ayur-Medi care for healthy skin and beautiful hair.' }
-          : t.slug === 'obesity-lifestyle-clinic' ? { name: clinicBySlug(t.slug)!.name, lede: 'Healthy weight, and care for lifestyle and metabolic disorders.' }
-          : clinicBySlug(t.slug)!;
+        const name = t.slug === REVIVE.slug ? REVIVE.name : clinicBySlug(t.slug)!.name;
+        const text = texts[t.slug]?.tile || defaultClinicText(t.slug)!.tile;
+        const pic = photos[`tile:${t.slug}`] ?? t.photo;
         const cls = t.size === 'wide' ? ' tile-wide' : t.size === 'full' ? ' tile-full' : t.size === 'half' ? ' tile-half' : '';
         return (
           <Link key={t.slug} href={`/clinics/${t.slug}`} className={`tile has-img${cls}`}>
-            <span className="tile-img"><Image src={t.img!} alt="" fill sizes={t.size === 'third' ? '(min-width: 1000px) 33vw, 100vw' : '(min-width: 1000px) 66vw, 100vw'} style={{ objectPosition: t.pos }} /></span>
+            <span className="tile-img"><Image src={pic.src} alt="" fill sizes={t.size === 'third' ? '(min-width: 1000px) 33vw, 100vw' : '(min-width: 1000px) 66vw, 100vw'} style={{ objectPosition: pic.position }} /></span>
             <span className="tile-copy">
-              <h3>{c.name}</h3>
-              <p>{c.lede}</p>
+              <h3>{name}</h3>
+              <p>{text}</p>
               <span className="more">Learn more<Chevron /></span>
             </span>
           </Link>

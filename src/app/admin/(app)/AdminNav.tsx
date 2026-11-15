@@ -12,6 +12,7 @@ export function AdminNav({ admin, name }: { admin: boolean; name: string }) {
     { href: '/admin/doctors', label: 'Doctors', on: path.startsWith('/admin/doctors') },
     { href: '/admin/treatments', label: 'Treatments', on: path.startsWith('/admin/treatments') },
     { href: '/admin/journal', label: 'Journal', on: path.startsWith('/admin/journal') },
+    { href: '/admin/photos', label: 'Photos', on: path.startsWith('/admin/photos') },
     ...(admin ? [{ href: '/admin/users', label: 'Accounts', on: path.startsWith('/admin/users') }, { href: '/admin/settings', label: 'Settings', on: path.startsWith('/admin/settings') }] : []),
     { href: '/admin/account', label: name, on: path.startsWith('/admin/account') },
   ];

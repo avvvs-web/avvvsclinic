@@ -7,14 +7,14 @@ import { CLINICS } from '@/lib/clinics';
 import { HOME_FAQ } from '@/lib/faq';
 import { medicalPageLd } from '@/lib/ld';
 import { CLINIC, DOCTOR, FOUNDED } from '@/lib/site';
-import { getTherapies } from '@/lib/content';
+import { getTherapies, sitePhoto } from '@/lib/content';
 
 export const revalidate = 300;
 
 const YEARS = new Date().getFullYear() - FOUNDED;
 
 export default async function Home() {
-  const therapies = await getTherapies();
+  const [therapies, hero, doctorPic] = await Promise.all([getTherapies(), sitePhoto('home-hero'), sitePhoto('home-doctor')]);
   return (
     <main id="main">
       <section className="hero" aria-labelledby="hero-title">
@@ -29,7 +29,7 @@ export default async function Home() {
         <div className="hero-stage" data-hero>
           <div className="hero-frame">
             <div className="hero-pic">
-              <Image src="/photos/shirodhara-dhara.jpg" alt="Warm oil streaming from a brass vessel onto the forehead during Shirodhara" fill priority sizes="100vw" style={{ objectPosition: '12% 50%' }} />
+              <Image src={hero.src} alt={hero.alt} fill priority sizes="100vw" style={{ objectPosition: hero.position }} />
               <div className="hero-caption">
                 <p>Shirodhara</p>
                 <span lang="ml">ശിരോധാര</span>
@@ -69,7 +69,7 @@ export default async function Home() {
       <section className="sec" aria-labelledby="care-title">
         <div className="split">
           <figure className="split-pic" data-reveal>
-            <Image src="/photos/pulse.jpg" alt="A doctor reading a patient’s pulse at the wrist" fill sizes="(min-width: 860px) 50vw, 100vw" style={{ objectPosition: '58% 50%' }} data-parallax="0.05" />
+            <Image src={doctorPic.src} alt={doctorPic.alt} fill sizes="(min-width: 860px) 50vw, 100vw" style={{ objectPosition: doctorPic.position }} data-parallax="0.05" />
           </figure>
           <div className="split-copy" data-reveal>
             <h2 id="care-title" className="t-1">Ayurveda and modern medicine, in one room.</h2>

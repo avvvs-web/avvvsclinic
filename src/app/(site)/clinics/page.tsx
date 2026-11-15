@@ -4,6 +4,10 @@ import { ClinicTiles, Visit } from '@/components/Sections';
 import { CLINICS, REVIVE } from '@/lib/clinics';
 import { breadcrumbLd, itemListLd, medicalPageLd } from '@/lib/ld';
 import { alternatesFor } from '@/lib/site';
+import { clinicTextOverrides } from '@/lib/content';
+
+// the clinics' summaries can be changed in the admin
+export const revalidate = 300;
 
 const DESCRIPTION = 'Six speciality clinics at AVVVS Ayur Speciality Clinic, Kozhikode: headache, pain management, obesity and lifestyle management, male and female infertility, pregnancy and postnatal care, and Gloveda Revive for skin and hair.';
 
@@ -14,7 +18,8 @@ export const metadata: Metadata = {
   openGraph: { url: '/clinics', title: 'Speciality clinics · AVVVS Ayur Speciality Clinic', description: DESCRIPTION },
 };
 
-export default function ClinicsPage() {
+export default async function ClinicsPage() {
+  const text = await clinicTextOverrides();
   return (
     <main id="main">
       <section className="page-head">
@@ -29,8 +34,8 @@ export default function ClinicsPage() {
       </section>
       <Faq title="Choosing a clinic." tone="mist" items={[
         { q: 'Which clinic should I book if I am not sure?', a: 'Choose “Not sure yet” when you book. A doctor will see you for a general Ayurveda consultation and guide you to the right speciality clinic.' },
-        ...CLINICS.map((c) => ({ q: `What is the ${c.name}?`, a: c.short })),
-        { q: 'What is Gloveda Revive?', a: REVIVE.short },
+        ...CLINICS.map((c) => ({ q: `What is the ${c.name}?`, a: text[c.slug]?.short ?? c.short })),
+        { q: 'What is Gloveda Revive?', a: text[REVIVE.slug]?.short ?? REVIVE.short },
       ]} />
       <Visit />
       <Close />

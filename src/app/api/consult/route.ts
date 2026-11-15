@@ -1,5 +1,6 @@
 import { createAppointment } from '@/lib/appointments';
 import { validateConsult, type ConsultInput } from '@/lib/consult';
+import { onlineBookingOn } from '@/lib/content';
 import { canCreateEvents } from '@/lib/google';
 import { onlineDoctorBySlug } from '@/lib/slots';
 
@@ -38,7 +39,7 @@ export async function POST(req: Request) {
 
   const doctor = await onlineDoctorBySlug(input.doctor);
   if (!doctor) return Response.json({ ok: false, error: 'invalid', fields: { doctor: 'That doctor is not taking online consultations right now.' } }, { status: 422 });
-  if (!(await canCreateEvents())) return Response.json({ ok: false, error: 'unavailable' }, { status: 503 });
+  if (!(await onlineBookingOn()) || !(await canCreateEvents())) return Response.json({ ok: false, error: 'unavailable' }, { status: 503 });
 
   const r = await createAppointment(doctor, input);
   if (!r.ok) return Response.json(r, { status: r.error === 'taken' ? 409 : r.error === 'unavailable' ? 503 : 500 });

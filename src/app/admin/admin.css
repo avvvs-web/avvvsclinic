@@ -165,3 +165,18 @@
 .ad-checklist li.is-ok { color: var(--ink); }
 .ad-checklist li.is-ok::before { background: #34C759; box-shadow: none; }
 .ad-checklist li.is-ok::after { content: ""; position: absolute; left: 6px; top: 6px; width: 5px; height: 8px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+
+/* the online booking switch */
+.ad-switch-row { display: flex; align-items: center; gap: 12px; }
+.ad-switch { position: relative; width: 52px; height: 30px; border-radius: 999px; border: 0; padding: 0; background: #C9D3DC; cursor: pointer; transition: background-color .25s ease; }
+.ad-switch span { position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgb(0 0 0 / .2); transition: transform .3s cubic-bezier(0.32, 0.72, 0, 1); }
+.ad-switch.is-on { background: #0B5C8F; }
+.ad-switch.is-on span { transform: translateX(22px); }
+.ad-switch:disabled { opacity: .6; cursor: progress; }
+.ad-switch:focus-visible { outline: 2px solid #0B5C8F; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .ad-switch, .ad-switch span { transition: none; } }
+
+/* two-part lists: FAQs, numbered steps, a clinic's points */
+.ad-pairs { display: grid; gap: 12px; justify-items: start; }
+.ad-pair { display: grid; gap: 8px; width: 100%; padding: 12px 14px; border: 1px solid #E1E6EB; border-radius: 12px; background: #fff; }
+.ad-pair input, .ad-pair textarea { width: 100%; }

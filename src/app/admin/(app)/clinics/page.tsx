@@ -10,13 +10,13 @@ export default async function Clinics() {
   const me = await requireUser();
   await ensureSchema();
   const links = await builtInClinics();
-  const added = (await sql()`SELECT slug, name, status, clinics FROM clinic_treatments WHERE NOT slug LIKE 'draft-%' ORDER BY sort, name`) as
+  const added = (await sql()`SELECT slug, name, status, clinics FROM clinic_treatments WHERE NOT slug LIKE 'draft-%' AND NOT builtin_edit ORDER BY sort, name`) as
     { slug: string; name: string; status: string; clinics: string[] }[];
 
-  // every therapy, with the clinics it is shown under right now
+  // every therapy, with the clinics it is shown under right now (an edit of a built-in therapy is not a separate one)
   const all = [
     ...THERAPIES.map((t) => ({ slug: t.slug, name: t.name, note: '', clinics: links[t.slug] ?? [] })),
-    ...added.map((t) => ({ slug: t.slug, name: t.name, note: t.status === 'draft' ? 'draft, not on the site yet' : 'added here', clinics: t.clinics ?? [] })),
+    ...added.filter((t) => !(t.slug in links)).map((t) => ({ slug: t.slug, name: t.name, note: t.status === 'draft' ? 'draft, not on the site yet' : 'added here', clinics: t.clinics ?? [] })),
   ];
 
   return (
@@ -24,7 +24,7 @@ export default async function Clinics() {
       <div className="ad-head">
         <div>
           <h1>Clinics</h1>
-          <p className="ad-muted">Choose the therapies listed under &ldquo;Therapies the doctor may recommend&rdquo; on each clinic&rsquo;s page. A therapy can belong to several clinics. New treatments appear here once they have a name.</p>
+          <p className="ad-muted">Choose the therapies listed under &ldquo;Therapies the doctor may recommend&rdquo; on each clinic&rsquo;s page. A therapy can belong to several clinics. New treatments appear here once they have a name. Use <b>Edit page text</b> to change a clinic page&rsquo;s wording and questions.</p>
         </div>
         {me.role === 'admin' && <ResetLinks />}
       </div>

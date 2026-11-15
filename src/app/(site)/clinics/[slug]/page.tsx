@@ -4,46 +4,27 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Close, Crumbs, Faq, JsonLd, More } from '@/components/Parts';
 import { ClinicTiles, Journal } from '@/components/Sections';
-import { postsForClinic, therapiesForClinic } from '@/lib/content';
-import { CLINICS, REVIVE, clinicBySlug, type Clinic } from '@/lib/clinics';
+import { getClinicPage, postsForClinic, sitePhoto, therapiesForClinic } from '@/lib/content';
+import { CLINICS, REVIVE } from '@/lib/clinics';
 import { CONDITIONS, breadcrumbLd, medicalPageLd } from '@/lib/ld';
 import { DOCTOR, alternatesFor } from '@/lib/site';
 
-// Gloveda Revive shares the clinic page's shape.
-const REVIVE_PAGE: Clinic = {
-  slug: REVIVE.slug, no: '07', name: REVIVE.name, label: 'Skin and hair', kicker: REVIVE.kicker,
-  title: 'Healthy skin. Beautiful hair.', short: REVIVE.short, lede: REVIVE.lede, body: REVIVE.body,
-  focus: [
-    { h: 'Ayurvedic formulations', p: 'Traditional formulations from a pharmacy that has made Ayurveda medicines in Kozhikode since 1921.' },
-    { h: 'Modern technologies', p: 'Modern skin and hair care technologies, such as Ayur-Medi infused hydra suction, microdermabrasion, microneedling, meso-electroporation and LED light therapy, alongside the formulations.' },
-    { h: 'Treatments', p: `${REVIVE.treatments.join(' and ')}. Treatment plans are chosen after a consultation.` },
-  ],
-  therapies: REVIVE.therapies,
-  image: { src: '/photos/revive.jpg', alt: 'A therapist applying a turmeric face pack with a skin-care device as a woman rests on a treatment bed', position: '40% 50%' },
-  faq: [
-    { q: 'What is Gloveda Revive?', a: REVIVE.short },
-    { q: 'What does Gloveda Revive treat?', a: 'A wide range of skin and hair concerns, combining traditional Ayurvedic formulations with modern skin and hair care technologies. Treatment plans are chosen after a consultation.' },
-    { q: 'Where is Gloveda Revive?', a: 'At AVVVS Ayur Speciality Clinic, 3rd floor, Kaloor Central, Annie Hall Road, opposite Kozhikode Railway Station, Kozhikode 673002.' },
-  ],
-};
-
-const find = (slug: string) => (slug === REVIVE.slug ? REVIVE_PAGE : clinicBySlug(slug));
 
 export const dynamicParams = false;
 export const revalidate = 300;
 export function generateStaticParams() { return [...CLINICS.map((c) => ({ slug: c.slug })), { slug: REVIVE.slug }]; }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const c = find((await params).slug);
+  const c = await getClinicPage((await params).slug);
   if (!c) return {};
   const title = c.slug === REVIVE.slug ? 'Gloveda Revive: Ayur-Medi Cosmetic Clinic for skin and hair' : `${c.name} in Kozhikode (Calicut)`;
   return { title, description: c.short, alternates: alternatesFor(`/clinics/${c.slug}`), openGraph: { url: `/clinics/${c.slug}`, title: `${title} · AVVVS`, description: c.short } };
 }
 
 export default async function ClinicPage({ params }: { params: Promise<{ slug: string }> }) {
-  const c = find((await params).slug);
+  const c = await getClinicPage((await params).slug);
   if (!c) notFound();
-  const [therapies, reading] = await Promise.all([therapiesForClinic(c.slug), postsForClinic(c.slug)]);
+  const [therapies, reading, pic] = await Promise.all([therapiesForClinic(c.slug), postsForClinic(c.slug), sitePhoto(`clinic:${c.slug}`)]);
 
   return (
     <main id="main">
@@ -59,14 +40,14 @@ export default async function ClinicPage({ params }: { params: Promise<{ slug: s
       </section>
 
       <div className="page-pic" data-reveal data-now data-delay="300">
-        <figure><Image src={c.image.src} alt={c.image.alt} width={2400} height={1030} priority sizes="(min-width: 1440px) 1440px, 100vw" style={{ objectPosition: c.image.position }} /></figure>
+        <figure><Image src={pic.src} alt={pic.alt} width={2400} height={1030} priority sizes="(min-width: 1440px) 1440px, 100vw" style={{ objectPosition: pic.position }} /></figure>
       </div>
 
       <section className="sec" aria-label={`About the ${c.name}`}>
         <div className="prose" data-reveal>
           <p className="first" data-answer>{c.short}</p>
-          <p>{c.lede}</p>
-          {c.body.map((b) => <p key={b}>{b}</p>)}
+          {c.lede && <p>{c.lede}</p>}
+          {c.body.map((b, i) => <p key={i}>{b}</p>)}
           {c.slug === 'pain-management-clinic' && <p className="doctor"><b>{DOCTOR.name}</b><span>{DOCTOR.qualifications.join(' · ')}</span></p>}
         </div>
       </section>
@@ -74,7 +55,7 @@ export default async function ClinicPage({ params }: { params: Promise<{ slug: s
       <section className="sec mist" aria-labelledby="care-title">
         <div className="in center head"><h2 id="care-title" className="t-2" data-reveal>{c.slug === 'headache-clinic' ? 'The headaches we see.' : 'What care looks like.'}</h2></div>
         <ul className="cols3" data-stagger>
-          {c.focus.map((f) => <li key={f.h}><h3>{f.h}</h3><p>{f.p}</p></li>)}
+          {c.focus.map((f, i) => <li key={i}><h3>{f.h}</h3><p>{f.p}</p></li>)}
         </ul>
         {therapies.length > 0 && (
           <div style={{ marginTop: 'clamp(56px, 7vw, 88px)', display: 'grid', gap: 18, justifyItems: 'center' }} data-reveal>

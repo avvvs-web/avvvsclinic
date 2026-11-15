@@ -1,7 +1,10 @@
 import { requireAdmin } from '@/lib/auth';
 import { isLocalDatabase } from '@/lib/db';
-import { googleStatus } from '@/lib/google';
+import { canCreateEvents, googleStatus } from '@/lib/google';
 import { fmtDate } from '@/lib/consult';
+import { onlineBookingOn } from '@/lib/content';
+import { onlineDoctorRows } from '@/lib/slots';
+import { OnlineSwitch } from './OnlineSwitch';
 import { SettingsControls } from './SettingsControls';
 
 export const metadata = { title: 'Settings' };
@@ -22,11 +25,27 @@ export default async function Settings({ searchParams }: { searchParams: Promise
   const secret = !!process.env.APP_SECRET?.trim();
   const cron = !!process.env.CRON_SECRET?.trim();
   const local = isLocalDatabase();
+  const on = await onlineBookingOn();
+  const online = (await onlineDoctorRows().catch(() => [])).length;
+  const live = on && online > 0 && (await canCreateEvents());
 
   return (
     <div className="ad-page ad-narrow" style={{ maxWidth: 760 }}>
       <h1>Settings</h1>
       {note && <p className={`ad-note ${note.error ? 'ad-note-error' : 'ad-note-ok'}`} role="status">{note.error || note.ok}</p>}
+
+      <section className="ad-card">
+        <div className="ad-card-top">
+          <h2>Online booking</h2>
+          <span className={`ad-pill ad-pill-${live ? 'published' : 'draft'}`}>{live ? 'Open to patients' : 'Closed to patients'}</span>
+        </div>
+        <p className="ad-muted">
+          {!on ? 'Switched off. The online consultation page asks patients to call the clinic instead.'
+            : live ? `Patients can book online consultations with ${online === 1 ? 'one doctor' : `${online} doctors`}.`
+            : `Switched on, but patients cannot book yet: ${[!g.connected && !local ? 'connect Google Calendar below' : '', !online ? 'switch online consultations on for at least one doctor, under Doctors' : ''].filter(Boolean).join(', and ')}.`}
+        </p>
+        <OnlineSwitch on={on} />
+      </section>
 
       <section className="ad-card">
         <div className="ad-card-top">

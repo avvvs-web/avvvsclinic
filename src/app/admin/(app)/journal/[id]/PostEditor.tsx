@@ -6,14 +6,16 @@ import type { Block } from '@/lib/journal';
 import { checkClaims, slugify } from '@/lib/claims';
 import { savePost, deletePost, type PostInput } from '../../../actions';
 import { ImagePicker } from '../../../ImagePicker';
+import { PairsEditor } from '../../../PairsEditor';
 
 type T = Block['t'];
-const LABELS: Partial<Record<T, string>> = { p: 'Paragraph', h2: 'Heading', ul: 'List', note: 'Note', quote: 'Pull quote', img: 'Image' };
-const ADD: T[] = ['p', 'h2', 'ul', 'note', 'quote', 'img'];
+const LABELS: Partial<Record<T, string>> = { p: 'Paragraph', h2: 'Heading', ul: 'List', ol: 'Numbered steps', note: 'Note', quote: 'Pull quote', img: 'Image' };
+const ADD: T[] = ['p', 'h2', 'ul', 'ol', 'note', 'quote', 'img'];
 
 function empty(t: T): Block {
   switch (t) {
     case 'ul': return { t, items: [''] };
+    case 'ol': return { t, items: [{ h: '', p: '' }] };
     case 'note': return { t, h: '', text: '' };
     case 'img': return { t, url: '', alt: '', caption: '' };
     case 'h2': case 'quote': return { t, text: '' };
@@ -21,7 +23,7 @@ function empty(t: T): Block {
   }
 }
 
-const textOf = (b: Block) => ('text' in b ? b.text : '') + ('items' in b && Array.isArray(b.items) ? (b.items as unknown[]).map((x) => (typeof x === 'string' ? ` ${x}` : '')).join('') : '') + ('h' in b ? ` ${b.h}` : '');
+const textOf = (b: Block) => ('text' in b ? b.text : '') + ('items' in b && Array.isArray(b.items) ? (b.items as unknown[]).map((x) => (typeof x === 'string' ? ` ${x}` : x && typeof x === 'object' ? ` ${(x as { h: string }).h} ${(x as { p: string }).p}` : '')).join('') : '') + ('h' in b ? ` ${b.h}` : '');
 
 function Grow({ value, onChange, placeholder, className = '' }: { value: string; onChange: (v: string) => void; placeholder?: string; className?: string }) {
   const ref = useRef<HTMLTextAreaElement>(null);
@@ -51,6 +53,7 @@ function BlockFields({ b, set }: { b: Block; set: (b: Block) => void }) {
         <button type="button" className="ad-link" onClick={() => set({ ...b, items: [...b.items, ''] })}>Add item</button>
       </>
     );
+    case 'ol': return <PairsEditor items={b.items} keys={['h', 'p']} labels={['Step heading', 'What happens in this step']} add="Add step" short onChange={(items) => set({ ...b, items })} />;
     case 'img': return (
       <>
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -80,19 +83,26 @@ function Preview({ d }: { d: PostInput & { body: Block[] } }) {
             case 'h2': return b.text.trim() ? <h2 key={i}>{b.text}</h2> : null;
             case 'quote': return b.text.trim() ? <p key={i} style={{ fontFamily: 'var(--f-head)', fontSize: '1.4em', color: 'var(--ink)' }}>{b.text}</p> : null;
             case 'ul': return <ul key={i}>{b.items.filter(Boolean).map((x, k) => <li key={k}>{x}</li>)}</ul>;
+            case 'ol': return <ol key={i}>{b.items.filter((x) => x.h || x.p).map((x, k) => <li key={k}><b>{x.h}</b> {x.p}</li>)}</ol>;
             case 'note': return <aside key={i} className="note"><b>{b.h}</b><p>{b.text}</p></aside>;
             // eslint-disable-next-line @next/next/no-img-element
             case 'img': return b.url ? <figure key={i} style={{ margin: 0 }}><img src={b.url} alt={b.alt} style={{ width: '100%', borderRadius: 14 }} />{b.caption && <figcaption className="small">{b.caption}</figcaption>}</figure> : null;
             default: return null;
           }
         })}
+        {d.faq.filter((x) => x.q && x.a).length > 0 && (
+          <>
+            <h2>Questions</h2>
+            {d.faq.filter((x) => x.q && x.a).map((x, k) => <div key={k}><p><b>{x.q}</b></p><p>{x.a}</p></div>)}
+          </>
+        )}
       </div>
     </div>
   );
 }
 
-export function PostEditor({ id, initial, status: startStatus, author, kinds, clinics, treatments, doctors }: {
-  id: number; initial: PostInput & { body: Block[] }; status: string; author: string; kinds: string[];
+export function PostEditor({ id, initial, status: startStatus, author, kinds, clinics, treatments, doctors, builtIn = false }: {
+  id: number; initial: PostInput & { body: Block[] }; status: string; author: string; kinds: string[]; builtIn?: boolean;
   clinics: { slug: string; name: string }[]; treatments: { slug: string; name: string; note: string }[]; doctors: { slug: string; name: string }[];
 }) {
   const [d, setD] = useState(initial.body.length ? initial : { ...initial, body: [empty('p')] });
@@ -108,7 +118,8 @@ export function PostEditor({ id, initial, status: startStatus, author, kinds, cl
   const claims = useMemo(() => checkClaims([
     { where: 'the title', text: d.title }, { where: 'the summary', text: d.dek }, { where: 'the short answer', text: d.answer },
     ...d.body.map((b, i) => ({ where: `block ${i + 1}`, text: textOf(b) })),
-  ]), [d.title, d.dek, d.answer, d.body]);
+    ...d.faq.map((x, i) => ({ where: `question ${i + 1}`, text: `${x.q} ${x.a}` })),
+  ]), [d.title, d.dek, d.answer, d.body, d.faq]);
   const words = `${d.dek} ${d.answer} ${d.body.map(textOf).join(' ')}`.split(/\s+/).filter(Boolean).length;
 
   useEffect(() => {
@@ -154,10 +165,11 @@ export function PostEditor({ id, initial, status: startStatus, author, kinds, cl
         <div className="ad-actions">
           <button type="button" className="ad-btn ad-btn-quiet" disabled={pending} onClick={() => save('keep')}>{status === 'published' ? 'Save changes' : 'Save draft'}</button>
           {status === 'published'
-            ? <button type="button" className="ad-btn ad-btn-quiet" disabled={pending} onClick={() => { if (confirm('Take this article off the Journal? It becomes a draft again.')) save('unpublish'); }}>Unpublish</button>
-            : <button type="button" className="ad-btn" disabled={pending} onClick={() => save('publish')}>Publish</button>}
+            ? <button type="button" className="ad-btn ad-btn-quiet" disabled={pending} onClick={() => { if (confirm(builtIn ? 'Unpublish your changes? The Journal shows the original article again; your edit is kept as a draft.' : 'Take this article off the Journal? It becomes a draft again.')) save('unpublish'); }}>Unpublish</button>
+            : <button type="button" className="ad-btn" disabled={pending} onClick={() => save('publish')}>{builtIn ? 'Publish changes' : 'Publish'}</button>}
         </div>
       </div>
+      {builtIn && <p className="ad-note" role="note">This article is built into the site. {status === 'published' ? 'Your version is live.' : 'The Journal shows the original until you publish your changes.'}</p>}
       {(msg.error || msg.ok) && <p className={`ad-note ${msg.error ? 'ad-note-error' : 'ad-note-ok'}`} role="status">{msg.error || msg.ok}{status === 'published' && msg.ok && <> <a href={`/journal/${slug}`} target="_blank" rel="noopener">View it</a></>}</p>}
 
       {tab === 'preview' ? <Preview d={{ ...d, slug }} /> : (
@@ -186,6 +198,12 @@ export function PostEditor({ id, initial, status: startStatus, author, kinds, cl
               ))}
             </ol>
             {d.body.length === 0 && <div className="ad-insert is-open">{ADD.map((t) => <button type="button" key={t} onClick={() => insert(0, t)}>+ {LABELS[t]}</button>)}</div>}
+
+            <fieldset className="ad-fieldset">
+              <legend className="ad-field"><span>Questions at the end <em>(optional)</em></span></legend>
+              <p className="ad-muted">Shown under the article and given to search engines as an FAQ. Answer each in a sentence or two.</p>
+              <PairsEditor items={d.faq} keys={['q', 'a']} labels={['A question patients ask', 'The answer']} add="Add a question" short onChange={(faq) => up({ faq })} />
+            </fieldset>
           </div>
 
           <aside className="ad-stack">
@@ -223,9 +241,13 @@ export function PostEditor({ id, initial, status: startStatus, author, kinds, cl
               <label className="ad-field"><span>Section</span>
                 <select value={d.kind} onChange={(e) => up({ kind: e.target.value })}>{kinds.map((k) => <option key={k}>{k}</option>)}</select>
               </label>
-              <label className="ad-field"><span>Web address</span>
-                <span className="ad-slug">/journal/<input value={slug} onChange={(e) => { setSlugTouched(true); up({ slug: slugify(e.target.value) || e.target.value.toLowerCase() }); }} placeholder="from-the-title" /></span>
-              </label>
+              {builtIn ? (
+                <div className="ad-field"><span>Web address</span><span className="ad-muted">/journal/{slug} (kept, so links keep working)</span></div>
+              ) : (
+                <label className="ad-field"><span>Web address</span>
+                  <span className="ad-slug">/journal/<input value={slug} onChange={(e) => { setSlugTouched(true); up({ slug: slugify(e.target.value) || e.target.value.toLowerCase() }); }} placeholder="from-the-title" /></span>
+                </label>
+              )}
               <span className="ad-field"><span>Cover image</span></span>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {d.cover && <img className="ad-thumb" src={d.cover.url} alt="" />}
@@ -244,7 +266,9 @@ export function PostEditor({ id, initial, status: startStatus, author, kinds, cl
                 : <ul className="ad-list">{claims.map((c, k) => <li key={k}><b>&ldquo;{c.word}&rdquo;</b> in {c.where}: {c.why}.</li>)}</ul>}
               <p className="ad-muted">About {Math.max(1, Math.round(words / 200))} min read · by {author}</p>
             </div>
-            <button type="button" className="ad-link ad-danger" disabled={pending} onClick={() => { if (confirm('Delete this article for good? This cannot be undone.')) start(async () => { await deletePost(id); }); }}>Delete this article</button>
+            {builtIn
+              ? <button type="button" className="ad-link ad-danger" disabled={pending} onClick={() => { if (confirm('Throw away your changes and go back to the original article?')) start(async () => { await deletePost(id); }); }}>Go back to the original</button>
+              : <button type="button" className="ad-link ad-danger" disabled={pending} onClick={() => { if (confirm('Delete this article for good? This cannot be undone.')) start(async () => { await deletePost(id); }); }}>Delete this article</button>}
           </aside>
         </div>
       )}
