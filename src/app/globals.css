@@ -510,6 +510,12 @@ html:not(.anim) .hero-caption { opacity: 1; }
 .manage { display: grid; gap: 18px; justify-items: center; width: 100%; }
 .manage-move { display: grid; gap: 20px; width: 100%; text-align: left; padding-top: 18px; border-top: 1px solid var(--hair-soft); }
 .manage .cc-link { font-size: 1.0625rem; }
+.manage-cancel { display: grid; gap: 14px; width: 100%; text-align: left; padding-top: 18px; border-top: 1px solid var(--hair-soft); }
+.manage-cancel h2, .manage-cancel h3 { margin: 0; }
+.manage-cancel h3 { margin-top: 6px; font-size: 1.125rem; }
+.manage-cancel ul { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; }
+.manage-cancel .actions { justify-content: flex-start; flex-wrap: wrap; }
+.manage-cancel > .cc-link { justify-self: start; }
 /* Visit / Online switch: two equal halves and one white pill that slides between them */
 .choice { position: relative; display: inline-grid; grid-template-columns: 1fr 1fr; padding: 4px; background: var(--hair-soft); border-radius: 999px; isolation: isolate; }
 .choice::before { content: ''; position: absolute; z-index: -1; top: 4px; bottom: 4px; left: 4px; width: calc(50% - 4px); border-radius: 999px; background: var(--white); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 4px 12px -6px rgba(0, 0, 0, 0.15); transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1); }

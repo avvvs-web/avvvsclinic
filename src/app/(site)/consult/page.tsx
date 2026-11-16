@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 const FAQ = [
   { q: 'How does an online consultation work?', a: 'Choose a doctor and a free time, and give your name, email and phone. You get an email with a Google Meet link at once. At your time, open the link on a phone or computer to talk to the doctor by video.' },
   { q: 'What do I need for the video call?', a: 'A phone, tablet or computer with a camera and microphone, and a steady internet connection. Google Meet opens in a web browser; on a phone, the free Google Meet app works best.' },
-  { q: 'Can I change or cancel my online consultation?', a: 'Yes, up to two hours before it starts, from the link in your confirmation email. After that, please call the clinic.' },
+  { q: 'Can I change or cancel my online consultation?', a: `You can move it to another time up to two hours before it starts, from the link in your confirmation email. To cancel, call the clinic on ${CLINIC.phones[0]} or ${CLINIC.phones[1]}. Cancelling two hours or more before the start is free, and a fee paid online is refunded in full; see the cancellation policy on the Fees, cancellations and refunds page.` },
   { q: 'Can every problem be handled online?', a: 'No. The doctor cannot examine you in person on a video call, and may ask you to visit the clinic for an examination or for therapies. Online consultations are not for emergencies: call 112 or 108.' },
   { q: 'Can I consult from outside Kerala or outside India?', a: 'Yes. Times are shown in India time, and in your own local time if you are elsewhere.' },
 ];

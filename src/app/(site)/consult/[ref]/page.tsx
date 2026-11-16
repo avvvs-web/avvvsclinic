@@ -43,7 +43,7 @@ export default async function AppointmentPage({ params, searchParams }: { params
               <>
                 {a.meet_url && <a className="btn" href={a.meet_url} target="_blank" rel="noopener">Join with Google Meet</a>}
                 <p className="small">The link is also in the email sent to {a.email}. Join a few minutes early, from a quiet, well-lit place.</p>
-                <ManageAppointment refId={a.ref} token={t} doctor={a.doctor_slug ?? ''} current={a.starts_at} canChange={canPatientChange(a)} />
+                <ManageAppointment refId={a.ref} token={t} doctor={a.doctor_slug ?? ''} current={a.starts_at} canChange={canPatientChange(a)} paid={!!a.amount_paise && a.payment_status === 'paid'} />
               </>
             )}
             {(cancelled || over || unpaid) && <Link className="btn" href="/consult">Book another consultation</Link>}

@@ -35,7 +35,7 @@ export async function GET(req: Request) {
       to: String(a.email), subject: `Today at ${fmtTime(starts)}: your online consultation · AVVVS Clinic`,
       title: `See you today, ${String(a.name).split(/\s+/)[0]}.`,
       rows: [['Doctor', String(a.doctor_name)], ['When', fmtWhen(starts)]],
-      message: 'Join a few minutes early from a quiet, well-lit place, with your reports and a list of your medicines. To change or cancel, use the link in your confirmation email.',
+      message: 'Join a few minutes early from a quiet, well-lit place, with your reports and a list of your medicines. To change the time, use the link in your confirmation email; to cancel, call the clinic.',
       ...(a.meet_url ? { button: { label: 'Join with Google Meet', url: String(a.meet_url) } } : {}),
     });
     if (r === 'sent' || r === 'logged') { await sql()`UPDATE clinic_appointments SET reminder_sent_at = now() WHERE id = ${a.id}`; sent++; }

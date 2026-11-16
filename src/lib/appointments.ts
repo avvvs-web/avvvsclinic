@@ -110,7 +110,7 @@ async function finalise(ref: string, token: string) {
   const ev = await createEvent({
     ref,
     summary: `Online consultation with ${a.doctor_name} · AVVVS Clinic`,
-    description: `Online consultation at ${CLINIC.name}.\nPatient: ${a.name}\nTo change or cancel: ${manageUrl(ref, token)}\nNot for emergencies: call 112 or 108.`,
+    description: `Online consultation at ${CLINIC.name}.\nPatient: ${a.name}\nTo change the time: ${manageUrl(ref, token)}\nTo cancel, call the clinic: ${CLINIC.phones.join(' or ')} (booking ${ref}).\nNot for emergencies: call 112 or 108.`,
     start: new Date(a.starts_at), end: new Date(a.ends_at),
     attendees: [{ email: a.email, name: a.name }, ...(a.doctor_email ? [{ email: a.doctor_email, name: a.doctor_name }] : [])],
   });
@@ -121,9 +121,9 @@ async function finalise(ref: string, token: string) {
     sendMail({
       to: a.email, subject: `Your online consultation: ${fmtDate(a.starts_at)}, ${fmtTime(a.starts_at)} · AVVVS Clinic`,
       title: `You’re booked, ${a.name.split(/\s+/)[0]}.`,
-      rows: [['Doctor', a.doctor_name ?? ''], ['When', when], ['Where', 'Google Meet (video call)'], ...paid],
-      message: 'Join from a quiet, well-lit place a few minutes early, with any recent reports and a list of your medicines to hand. An online consultation is not for emergencies: call 112 or 108.',
-      button: { label: 'Join, change or cancel', url: manageUrl(ref, token) },
+      rows: [['Doctor', a.doctor_name ?? ''], ['When', when], ['Where', 'Google Meet (video call)'], ['Booking', ref], ...paid],
+      message: `Join from a quiet, well-lit place a few minutes early, with any recent reports and a list of your medicines to hand. To cancel, call the clinic on ${CLINIC.phones.join(' or ')} with your booking reference; cancelling ${CANCEL_CUTOFF_MIN / 60} hours or more before the start is free${paid.length ? ' and your fee is refunded in full' : ''}. An online consultation is not for emergencies: call 112 or 108.`,
+      button: { label: 'Join or change the time', url: manageUrl(ref, token) },
     }),
     sendMail({
       to: [clinicInbox(), ...(a.doctor_email ? [a.doctor_email] : [])], replyTo: a.email,

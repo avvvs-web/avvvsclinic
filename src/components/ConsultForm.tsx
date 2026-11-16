@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { fmtWhen, rupees, validateConsult, type ConsultInput, type OnlineDoctor } from '@/lib/consult';
+import { CANCEL_CUTOFF_MIN, fmtWhen, rupees, validateConsult, type ConsultInput, type OnlineDoctor } from '@/lib/consult';
 import { CLINIC, tel } from '@/lib/site';
 import { trackBooking } from '@/lib/track';
 import { ModeSwitch } from './ModeSwitch';
@@ -160,9 +160,10 @@ export function ConsultForm({ doctors, payOnline = false }: { doctors: OnlineDoc
                 </div>
                 <label className={`consent${err.consent ? ' has-error' : ''}`}>
                   <input type="checkbox" checked={c.consent} onChange={(e) => set('consent', e.target.checked)} />
-                  <span>I agree to consult the doctor online by video. I understand the doctor cannot examine me in person and may ask me to visit the clinic, and that this is not for emergencies. <Link href="/terms#online" target="_blank">Terms</Link> · <Link href="/privacy" target="_blank">Privacy</Link>{doctor.feePaise ? <> · <Link href="/refunds" target="_blank">Refunds</Link></> : null}</span>
+                  <span>I agree to consult the doctor online by video. I understand the doctor cannot examine me in person and may ask me to visit the clinic, and that this is not for emergencies. <Link href="/terms#online" target="_blank">Terms</Link> · <Link href="/privacy" target="_blank">Privacy</Link> · <Link href="/refunds#cancel" target="_blank">Cancellation policy</Link></span>
                 </label>
                 {err.consent && <p className="err" role="alert">{err.consent}</p>}
+                <p className="small" style={{ textAlign: 'center' }}>To cancel, call the clinic. Cancelling {CANCEL_CUTOFF_MIN / 60} hours or more before the start is free{fee > 0 ? ' and the fee is refunded in full' : ''}; later than that, {fee > 0 ? 'the fee is not normally refunded' : 'please still call, so the time can go to someone else'}.</p>
                 {fee > 0 && <p className="small" style={{ textAlign: 'center' }}>The fee is {rupees(fee)}. You pay it now through Razorpay, by UPI, card or net banking; the clinic never sees your card or UPI details. The time is held for you while you pay.</p>}
                 {state === 'failed' && <p className="err" role="alert">The booking could not be made. Please try again, or call {CLINIC.phones[0]}.</p>}
                 {state === 'unpaid' && <p className="err" role="alert">The payment was not completed, so nothing is booked and nothing was charged. You can try again.</p>}

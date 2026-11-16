@@ -24,7 +24,7 @@ export default function Refunds() {
   return (
     <LegalPage
       title="Fees, cancellations and refunds"
-      updated="15 November 2026"
+      updated="16 November 2026"
       intro={<p>This page explains how {CLINIC.name}, run by {CLINIC.legal} (AVVVS), Kozhikode, charges for consultations and therapies, how to cancel or change an appointment, and when you get your money back. It is a draft awaiting legal review.</p>}
       sections={[
         { id: 'fees', title: 'Fees', body: <>
@@ -38,10 +38,11 @@ export default function Refunds() {
           <p>At present, online consultations are booked without paying on this website. If a fee applies, the clinic tells you how to pay it. Fees for visits to the clinic are paid at the clinic.</p>
           <p>When online payment is switched on, you will pay when you book, through a licensed payment gateway, by UPI, card, net banking or wallet. Your payment details go to the gateway, not to the clinic, and the clinic never sees or stores your card number or UPI PIN. An appointment awaiting payment is held for a few minutes and released if the payment does not complete. You receive a receipt by email.</p>
         </> },
-        { id: 'cancel', title: 'Cancelling or changing an online consultation', body: <>
-          <p>You can cancel or move an online consultation up to {hours} hours before it starts, using the link in your confirmation email. Closer to the time, please call {phone}.</p>
+        { id: 'cancel', title: 'Cancellation policy for online consultations', body: <>
+          <p><b>To cancel, call the clinic</b> on {phone} or {CLINIC.phones[1]}, with your booking reference (it is in your confirmation email). Cancellations are made by phone so the clinic can first offer you another time; the clinic then cancels the booking and sends you an email to confirm it. The time of your call counts as the time you cancelled.</p>
+          <p>To move an online consultation instead, use the link in your confirmation email, up to {hours} hours before it starts. Closer to the time, call the clinic.</p>
           <ul>
-            <li><b>You cancel {hours} hours or more before the start:</b> the full fee is refunded, automatically when you paid online.</li>
+            <li><b>You cancel {hours} hours or more before the start:</b> the full fee is refunded, automatically when you paid online, as soon as the clinic cancels the booking.</li>
             <li><b>You cancel less than {hours} hours before, or do not join:</b> the fee is not normally refunded, because the doctor’s time was kept for you. If something serious stopped you, call the clinic and it will consider a refund or a new time.</li>
             <li><b>You move the appointment</b> to another available time with the same doctor: no charge, and the fee you paid carries over.</li>
           </ul>
