@@ -67,7 +67,17 @@ export default async function ClinicPage({ params }: { params: Promise<{ slug: s
         )}
       </section>
 
-      <Faq title="Questions, answered." items={c.faq} />
+      {c.slug === REVIVE.slug && (
+        <section className="sec" aria-labelledby="facials-title">
+          <div className="in center head"><h2 id="facials-title" className="t-2" data-reveal>{REVIVE.facials.title}</h2></div>
+          <ul className="checks" data-stagger>
+            {REVIVE.facials.points.map((p) => <li key={p}>{p}</li>)}
+          </ul>
+          <p className="checks-close" data-reveal>{REVIVE.facials.close}</p>
+        </section>
+      )}
+
+      <Faq title="Questions, answered." items={c.faq} tone={c.slug === REVIVE.slug ? 'mist' : ''} />
 
       {reading.length > 0 && <Journal only={reading} title="Reading for this clinic" tone="" />}
 

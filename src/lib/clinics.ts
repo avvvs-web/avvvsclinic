@@ -181,4 +181,18 @@ export const REVIVE = {
   /** the clinic's own treatments, named by the clinic; not among the Ayurvedic therapies */
   treatments: ['Ayur-Medi facials', 'hair fall and dandruff treatment'],
   therapies: [] as string[],
+  /** the clinic's own wording (supplied 2026-11-16), shown on the Gloveda Revive page */
+  facials: {
+    title: 'Why Ayur-Medi facials?',
+    points: [
+      'Customised Ayurvedic skincare formulations.',
+      'Modern skincare technologies to enhance skin resurfacing and product absorption.',
+      'Specialised face contouring and lymphatic drainage techniques.',
+      'Therapeutic facial massage to relax deeper facial muscles and release tension.',
+      'Marma point stimulation for rejuvenation.',
+      'Intense hydration, nourishment and anti-ageing care.',
+      'Doctor-led procedures tailored to individual skin concerns.',
+    ],
+    close: 'Doctor-led. Technology-enhanced. Rooted in Ayurveda.',
+  },
 };

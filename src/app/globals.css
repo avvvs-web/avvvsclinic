@@ -316,6 +316,12 @@ html:not(.anim) .hero-caption { opacity: 1; }
 .cols3 li:only-child { text-align: center; max-width: 62ch; margin: 0 auto; }
 .th-more .g-ml { color: var(--gold); font-size: 1.15rem; margin-top: -4px; }
 .th-more { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+/* a ticked list, two columns where there is room (Gloveda Revive's facials) */
+.checks { list-style: none; margin: 0 auto; padding: 0; max-width: 940px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr)); gap: 18px 48px; }
+.checks li { position: relative; padding: 0 0 18px 38px; border-bottom: 1px solid var(--hair-soft); font-size: 1.0625rem; line-height: 1.45; color: var(--ink-2); }
+.checks li::before { content: ''; position: absolute; left: 0; top: 0.1em; width: 24px; height: 24px; border-radius: 50%; background: var(--blue)
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 12.5l3.2 3.2L17 9'/%3E%3C/svg%3E") center / 100% no-repeat; }
+.checks-close { margin: clamp(40px, 5vw, 64px) auto 0; text-align: center; font-size: clamp(1.35rem, 2.4vw, 1.75rem); line-height: 1.25; letter-spacing: -0.01em; color: var(--ink); }
 .pills { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 .pills a { display: inline-flex; align-items: baseline; gap: 8px; padding: 10px 18px; border-radius: 999px; background: var(--white); color: var(--ink); font-size: 0.98rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 14px -6px rgba(0, 0, 0, 0.12); transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease); }
 .pills a:hover { text-decoration: none; transform: translateY(-2px); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 10px 24px -10px rgba(0, 0, 0, 0.2); }
