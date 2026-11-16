@@ -175,6 +175,37 @@ export const REVIVE = {
   pillars: ['Healthy skin', 'Beautiful hair'],
   /** the clinic's own treatments, named by the clinic; not among the Ayurvedic therapies */
   treatments: ['Ayur-Medi facials', 'hair fall and dandruff treatment'],
+  /** the treatment menu, from the clinic's Gloveda Revive brochure (supplied 2026-11-16) */
+  menu: [
+    {
+      title: 'Signature Ayur-Medi facials',
+      items: [
+        { name: 'Gloveda Saffron Glow Facial with Needle-Free Mesotherapy', p: 'A luxurious saffron-infused glow ritual, paired with meso-electroporation technology.' },
+        { name: 'Gloveda Radiance Clean-Up Facial', p: 'A refreshing deep-clean facial, designed to refine the skin’s appearance.' },
+        { name: 'Gloveda Acne Clear Facial with Ayur-Medi Infusion', p: 'A clarifying facial for acne-prone skin that combines Ayurvedic care with gentle medi-suction, for deeply cleansed, clear skin.' },
+        { name: 'Gloveda Glowlift Contour Facial', p: 'A sculpting and revitalising facial for the face and neck, with Marma point massage for relaxation and a refreshed, contoured look.' },
+        { name: 'Gloveda Kamsya Wand Detox & Glow Facial', p: 'A purifying facial, complemented by a traditional Kamsya wand massage, that leaves the skin refreshed, relaxed and rejuvenated.' },
+        { name: 'Gloveda Advanced De-tan Resurfacing Facial', p: 'A revitalising treatment that combines de-tan care with microdermabrasion.' },
+        { name: 'Gloveda Ayurhydra Infusion Facial', p: 'An intensive hydration ritual that deeply cleanses, replenishes and revives the skin, for a soft, fresh, healthy-looking glow.' },
+        { name: 'Gloveda Collagen Restore Facial with Microneedling', p: 'An advanced skin-rejuvenation ritual with microneedling, for smoother, firmer, more youthful-looking skin.' },
+      ],
+    },
+    {
+      title: 'Hair care therapies',
+      items: [
+        { name: 'Gloveda Hairfall Treatment', p: 'A purifying scalp ritual, designed to cleanse away build-up and refresh the scalp.' },
+        { name: 'Gloveda Anti-Dandruff Scalp Revival', p: 'An advanced Ayurvedic scalp treatment that combines exfoliation, meso-jet and meso combing.' },
+        { name: 'Gloveda KeshaVive Hair Root Revival Treatment', p: 'A specialised scalp treatment for concerns such as hair thinning and early-stage baldness.' },
+      ],
+    },
+    {
+      title: 'Eye and foot care',
+      items: [
+        { name: 'Gloveda Eye Revive', p: 'Refreshes and revitalises the delicate eye area, for a more rested look.' },
+        { name: 'Gloveda Foot Revive', p: 'Relaxing foot care that soothes the feet and leaves them rejuvenated.' },
+      ],
+    },
+  ],
   therapies: [] as string[],
   /** the clinic's own wording (supplied 2026-11-16), shown on the Gloveda Revive page */
   facials: {

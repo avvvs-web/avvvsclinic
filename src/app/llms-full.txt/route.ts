@@ -38,7 +38,7 @@ export async function GET() {
 ## Speciality clinics
 
 ${[...CLINICS.map((c) => `### ${c.name}\nURL: ${abs(`/clinics/${c.slug}`)}\n\n${c.short}\n\n${c.lede} ${c.body.join(' ')}\n\nTherapies: ${therapies.filter((t) => t.clinics?.includes(c.slug)).map((t) => t.name).join(', ') || 'chosen after consultation'}\n\n${c.faq.map((f) => `Q: ${f.q}\nA: ${f.a}`).join('\n\n')}`),
-  `### ${REVIVE.name} (${REVIVE.kicker})\nURL: ${abs(`/clinics/${REVIVE.slug}`)}\n\n${REVIVE.short}\n\n${REVIVE.body.join(' ')}`].join('\n\n')}
+  `### ${REVIVE.name} (${REVIVE.kicker})\nURL: ${abs(`/clinics/${REVIVE.slug}`)}\n\n${REVIVE.short}\n\n${REVIVE.body.join(' ')}\n\n${REVIVE.menu.map((g) => `${g.title}:\n${g.items.map((t) => `- ${t.name}: ${t.p}`).join('\n')}`).join('\n\n')}`].join('\n\n')}
 
 ## Therapies
 

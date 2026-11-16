@@ -68,7 +68,27 @@ export default async function ClinicPage({ params }: { params: Promise<{ slug: s
       </section>
 
       {c.slug === REVIVE.slug && (
-        <section className="sec" aria-labelledby="facials-title">
+        <section className="sec" aria-labelledby="menu-title">
+          <div className="in center head">
+            <h2 id="menu-title" className="t-2" data-reveal>The treatments.</h2>
+            <p className="lede" data-reveal>Each plan is chosen with the doctor, after a consultation.</p>
+          </div>
+          <div className="menu">
+            {REVIVE.menu.map((g) => (
+              <div key={g.title} className="menu-group">
+                <h3 className="menu-title" data-reveal>{g.title}</h3>
+                <ul className="menu-list" data-stagger>
+                  {g.items.map((t) => <li key={t.name}><h4>{t.name}</h4><p>{t.p}</p></li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <p className="after-tiles" data-reveal><Link className="btn btn-lg" href={`/book?care=${REVIVE.slug}`}>Book a consultation<Chevron /></Link></p>
+        </section>
+      )}
+
+      {c.slug === REVIVE.slug && (
+        <section className="sec mist" aria-labelledby="facials-title">
           <div className="in center head"><h2 id="facials-title" className="t-2" data-reveal>{REVIVE.facials.title}</h2></div>
           <ul className="checks" data-stagger>
             {REVIVE.facials.points.map((p) => <li key={p}>{p}</li>)}
@@ -77,7 +97,7 @@ export default async function ClinicPage({ params }: { params: Promise<{ slug: s
         </section>
       )}
 
-      <Faq title="Questions, answered." items={c.faq} tone={c.slug === REVIVE.slug ? 'mist' : ''} />
+      <Faq title="Questions, answered." items={c.faq} tone="" />
 
       {reading.length > 0 && <Journal only={reading} title="Reading for this clinic" tone="" />}
 

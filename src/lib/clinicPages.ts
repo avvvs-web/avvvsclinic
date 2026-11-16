@@ -14,13 +14,13 @@ export const REVIVE_PAGE: Clinic = {
   focus: [
     { h: 'Ayurvedic formulations', p: 'Traditional formulations from a pharmacy that has made Ayurveda medicines in Kozhikode since 1921.' },
     { h: 'Modern technologies', p: 'Modern skin and hair care technologies, such as Ayur-Medi infused hydra suction, microdermabrasion, microneedling, meso-electroporation and LED light therapy, alongside the formulations.' },
-    { h: 'Treatments', p: `${REVIVE.treatments.join(' and ')}. Treatment plans are chosen after a consultation.` },
+    { h: 'Treatments', p: 'Eight signature Ayur-Medi facials, hair care therapies for hair fall, dandruff and thinning, and eye and foot care. Treatment plans are chosen after a consultation.' },
   ],
   therapies: REVIVE.therapies,
   image: REVIVE_IMAGE,
   faq: [
     { q: 'What is Gloveda Revive?', a: REVIVE.short },
-    { q: 'What does Gloveda Revive treat?', a: 'A wide range of skin and hair concerns, combining traditional Ayurvedic formulations with modern skin and hair care technologies. Treatment plans are chosen after a consultation.' },
+    { q: 'What does Gloveda Revive treat?', a: 'A wide range of skin and hair concerns, combining traditional Ayurvedic formulations with modern skin and hair care technologies: facials for glow, acne, tanning, hydration, contouring and signs of ageing; treatments for hair fall, dandruff, hair thinning and early-stage baldness; and eye and foot care. Treatment plans are chosen after a consultation.' },
     { q: 'Where is Gloveda Revive?', a: 'At AVVVS Ayur Speciality Clinic, 3rd floor, Kaloor Central, Annie Hall Road, opposite Kozhikode Railway Station, Kozhikode 673002.' },
   ],
 };
