@@ -13,7 +13,9 @@ export default function config(phase: string): NextConfig {
     env: { NEXT_PUBLIC_SITE_URL: SITE_URL, NEXT_PUBLIC_DEPLOY_ENV: process.env.VERCEL_ENV || 'local' },
     reactStrictMode: true,
     // admin uploads live in Vercel Blob
-    images: { formats: ['image/avif', 'image/webp'], remotePatterns: [{ protocol: 'https', hostname: '*.public.blob.vercel-storage.com' }] },
+    // quality 90 for every photograph (Next's default 75 becomes AVIF quality 47, which smears skin,
+    // oil and cloth in the therapy photos; 90 becomes 56, about 1.4 times the bytes)
+    images: { formats: ['image/avif', 'image/webp'], qualities: [90], remotePatterns: [{ protocol: 'https', hostname: '*.public.blob.vercel-storage.com' }] },
     // PGlite (the local admin database) ships its own WebAssembly; keep it out of the server bundle
     serverExternalPackages: ['@electric-sql/pglite'],
     experimental: { inlineCss: true },
