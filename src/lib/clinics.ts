@@ -69,7 +69,6 @@ export const CLINICS: Clinic[] = [
     short: 'The AVVVS Pain Management Clinic in Kozhikode combines Ayurvedic therapies with modern medical care under Dr. Ranjith Kumar (BAMS, MBBS, DA, MD), offering treatment tailored to individual needs for chronic pain and improved mobility.',
     lede: 'Living with pain can make even the simplest everyday activities difficult, keeping you from doing the things you love.',
     body: [
-      'AVVVS Ayur Speciality Clinic offers an integrated approach to pain management, combining Ayurvedic therapies with modern medical care under the guidance of Dr. Ranjith Kumar (BAMS, MBBS, DA, MD).',
       'Through personalised treatment plans, we help you manage pain, improve mobility and get back to living life more comfortably.',
     ],
     focus: [
@@ -96,7 +95,7 @@ export const CLINICS: Clinic[] = [
     short: 'The AVVVS Obesity and Lifestyle Management Clinic in Kozhikode focuses on healthy weight management and lifestyle-related disorders, combining Ayurvedic therapies such as Udwarthana with modern body-contouring treatments like cryolipolysis, along with dietary guidance, exercise and lifestyle changes.',
     lede: 'Changing lifestyles, work patterns and dietary habits can contribute to weight gain and metabolic disorders, affecting your overall health, mobility and quality of life.',
     body: [
-      'Obesity is more than a change in body weight; it can affect your overall health and well-being. AVVVS Ayur Speciality Clinic combines traditional Ayurvedic therapies such as Udwarthana with modern body-contouring technologies, dietary guidance and exercise.',
+      'Obesity is more than a change in body weight; it can affect your overall health and well-being.',
       'For lifestyle and metabolic disorders, personalised Ayurvedic treatments, dietary guidance and lifestyle modifications help you manage these conditions, promoting better health and overall well-being.',
     ],
     focus: [
@@ -121,10 +120,7 @@ export const CLINICS: Clinic[] = [
     title: 'Beside you on the way to parenthood',
     short: 'The AVVVS Male and Female Infertility Clinic in Kozhikode offers specialised Ayurvedic care for male and female reproductive health, taking a holistic approach to support couples on their journey towards parenthood.',
     lede: 'Fertility challenges can be an emotional and difficult journey for couples.',
-    body: [
-      'The clinic offers Ayurvedic care for male and female reproductive health, with treatments suited to individual needs.',
-      'It aims to support couples on their journey towards parenthood through a comprehensive approach to reproductive well-being.',
-    ],
+    body: [],
     focus: [
       { h: 'Care for both partners', p: 'Treatments for male and female reproductive health, chosen to suit each person’s individual needs.' },
     ],
@@ -147,7 +143,6 @@ export const CLINICS: Clinic[] = [
     lede: 'Pregnancy and motherhood bring changing care needs at every stage.',
     body: [
       'Ayurveda emphasises nurturing the mother who nurtures new life, recognising the importance of her health and well-being.',
-      'AVVVS Ayur Speciality Clinic offers personalised Ayurvedic pregnancy and postnatal care, with dietary guidance and supportive therapies to care for mothers throughout this journey.',
     ],
     focus: [
       { h: 'During pregnancy', p: 'Personalised care and dietary guidance tailored to your needs, month by month, alongside regular antenatal care.' },
