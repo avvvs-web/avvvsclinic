@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Close, Crumbs, Faq, JsonLd, More } from '@/components/Parts';
+import { Chevron, Close, Crumbs, Faq, JsonLd } from '@/components/Parts';
 import { ClinicTiles, Journal } from '@/components/Sections';
 import { getClinicPage, postsForClinic, sitePhoto, therapiesForClinic } from '@/lib/content';
 import { CLINICS, REVIVE } from '@/lib/clinics';
@@ -74,9 +74,9 @@ export default async function ClinicPage({ params }: { params: Promise<{ slug: s
       <section className="sec mist" aria-labelledby="others-title">
         <div className="in center head">
           <h2 id="others-title" className="t-2" data-reveal>Other clinics.</h2>
-          <p data-reveal><More href="/clinics">See all clinics</More></p>
         </div>
         <ClinicTiles exclude={c.slug} />
+        <p className="after-tiles" data-reveal><Link className="btn btn-lg" href="/clinics">See all clinics<Chevron /></Link></p>
       </section>
 
       <Close care={c.slug} />

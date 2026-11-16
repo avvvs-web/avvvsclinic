@@ -84,6 +84,10 @@ html.anim [data-stagger] > * { opacity: 0; }
 .btn:active { transform: scale(0.98); }
 .btn:disabled { opacity: 0.6; cursor: progress; }
 .btn-sm { min-height: 32px; padding: 0 14px; font-size: 0.82rem; }
+.btn-lg { min-height: 56px; padding: 0 32px; font-size: 1.125rem; }
+.after-tiles { margin: clamp(36px, 5vw, 56px) 0 0; text-align: center; }
+.btn svg { width: 0.62em; height: 0.62em; flex: none; transition: transform 0.3s var(--ease); }
+.btn:hover svg { transform: translateX(3px); }
 .btn-light { color: var(--ink); background: var(--mist); }
 .btn-light:hover { background: var(--hair-soft); }
 .more { display: inline-flex; align-items: center; gap: 4px; font-size: 1.0625rem; }
