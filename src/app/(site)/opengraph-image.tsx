@@ -5,5 +5,5 @@ export const contentType = 'image/png';
 export const alt = 'AVVVS Ayur Speciality Clinic, Kozhikode';
 
 export default function Image() {
-  return ogImage({ still: 'photos/shirodhara-dhara.jpg', kicker: 'AVVVS Ayur Speciality Clinic', title: 'Rediscover health and well-being.' });
+  return ogImage({ still: 'photos/shirodhara.jpg', kicker: 'AVVVS Ayur Speciality Clinic', title: 'Rediscover health and well-being.' });
 }

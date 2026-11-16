@@ -25,7 +25,7 @@ export const THERAPIES: Therapy[] = [
     how: 'Cloths soaked in lukewarm oil are squeezed over the body by two or more therapists working in step.',
   },
   {
-    slug: 'shirodhara', img: '/photos/shirodhara-dhara.jpg', pos: '18% 50%', name: 'Shirodhara', ml: 'ശിരോധാര',
+    slug: 'shirodhara', img: '/photos/shirodhara.jpg', pos: '18% 50%', name: 'Shirodhara', ml: 'ശിരോധാര',
     what: 'A steady, unbroken stream of warm medicated liquid, usually oil or kashaya, poured gently over the forehead.',
     how: 'You lie still as a gentle, continuous stream flows across your forehead from a vessel suspended above.',
   },

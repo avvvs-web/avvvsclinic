@@ -30,7 +30,7 @@ const nameOf = (slug: string) => (slug === REVIVE.slug ? REVIVE.name : CLINICS.f
 
 export const SITE_PHOTOS: SitePhoto[] = [
   { id: 'home-hero', label: 'Opening photograph', where: 'Home page, behind the title', page: '/',
-    default: { src: '/photos/shirodhara-dhara.jpg', alt: 'Warm oil streaming from a brass vessel onto the forehead during Shirodhara', position: '12% 50%' } },
+    default: { src: '/photos/shirodhara.jpg', alt: 'Warm oil streaming from a brass vessel onto the forehead during Shirodhara', position: '12% 50%' } },
   { id: 'home-doctor', label: 'Doctor photograph', where: 'Home page, beside “Ayurveda and modern medicine, in one room.”', page: '/',
     default: { src: '/photos/pulse.jpg', alt: 'A doctor reading a patient’s pulse at the wrist', position: '58% 50%' } },
   ...CLINICS.map((c) => ({ id: `clinic:${c.slug}`, label: c.name, where: 'Clinic page, under the title', page: `/clinics/${c.slug}`, default: c.image })),

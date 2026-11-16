@@ -32,3 +32,10 @@ All illustrative, converted from WebP to JPEG:
 - shirodhara-dhara.jpg (replaced): oil streaming from a hanging brass dhara vessel onto the forehead, eyes covered with a flat gauze strip and a band, head over a wooden basin. Used for the home hero and the Shirodhara therapy.
 - revive.jpg: a turmeric face pack and a skin-care device on a woman resting on a treatment bed, for Gloveda Revive (replaces hairoil.jpg there).
 - kati-vasti.jpg: warm oil poured from a brass kindi into a dough ring on the lower back, for the Kati Vasti therapy (new to the therapies list).
+
+## Supplied by the clinic (2026-11-16)
+
+shirodhara.jpg: the same Shirodhara scene redone (towel lower, shoulder bare), converted from WebP to JPEG. Illustrative.
+Replaces shirodhara-dhara.jpg everywhere it was used (home hero, the Shirodhara therapy, the journal cover, share
+card, sitemap and structured data); a new name so no cache serves the old picture. The old file is kept only in
+case an admin photo choice still points at it.
