@@ -51,7 +51,7 @@ export const THERAPIES: Therapy[] = [
   },
   {
     // added 2026-11-15 with the clinic's photograph; the wording is a plain account of the procedure, for the doctors to confirm
-    slug: 'kati-vasti', img: '/photos/kati-vasti.jpg', pos: '50% 62%', name: 'Kati Vasti', ml: 'കടിവസ്തി',
+    slug: 'kati-vasti', img: '/photos/kati-vasti-2.jpg', pos: '50% 68%', name: 'Kati Vasti', ml: 'കടിവസ്തി',
     what: 'A treatment for the lower back in which warm medicated oil is held over the painful area inside a ring of dough.',
     how: 'You lie face down while a ring of black gram dough is sealed onto the lower back and filled with warm oil, which is gently replenished to keep it warm.',
   },

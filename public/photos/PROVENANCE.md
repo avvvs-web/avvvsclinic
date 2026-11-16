@@ -46,3 +46,6 @@ other portraits' 1199×1312 frame. It replaces niyatha-kaloor.jpg (a new name, s
 gloveda-revive.jpg: a practitioner in a Gloveda Revive coat using a skin-care device over a turmeric face pack,
 converted from WebP to JPEG. Illustrative. Replaces revive.jpg for the Gloveda Revive page, its tile, share card
 and sitemap entry (revive.jpg is kept for any admin photo choice that points at it).
+
+kati-vasti-2.jpg: warm oil poured from a brass kindi into a dough ring on the lower back, redone, converted from
+WebP to JPEG. Illustrative. Replaces kati-vasti.jpg for the Kati Vasti therapy (the old file is kept).
