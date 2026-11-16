@@ -57,8 +57,11 @@ patient can join, add it to their calendar, move it or cancel it (until two hour
   slot is taken, and the slot is released if Google fails (`src/lib/appointments.ts`).
 - Admin: **Doctors** (each doctor's email, hours, slot length, fee, days off), **Consultations**
   (join, move, cancel, mark completed, download a spreadsheet), **Settings** (connect Google).
-- Payments are off. `src/lib/payments.ts` defines the provider interface and the table already has
-  the payment columns and a `pending_payment` hold, so a gateway (Razorpay) is one adapter plus a webhook.
+- Payment (`src/lib/payments.ts`, `payments-razorpay.ts`) is off until `PAYMENT_PROVIDER=razorpay` and
+  the Razorpay keys are set. Then a doctor's fee is paid at booking: the slot is held as
+  `pending_payment` for 10 minutes, Razorpay's checkout opens, and the booking is confirmed by
+  `/api/consult/pay` (the browser's return) or `/api/payments/razorpay/webhook`, whichever comes first.
+  A payment that can no longer be honoured is refunded automatically, as are cancellations.
 - Pappyjoe has no public API, so appointments are not pushed to it; use the spreadsheet download, or
   ask Pappyjoe for API access.
 - Development needs no Google account: bookings get a placeholder Meet link and emails print in the terminal.

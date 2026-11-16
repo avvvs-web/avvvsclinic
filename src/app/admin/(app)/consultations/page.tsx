@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { sql, ensureSchema } from '@/lib/db';
 import { requireUser } from '@/lib/auth';
-import { fmtDate, fmtTime } from '@/lib/consult';
+import { fmtDate, fmtTime, rupees } from '@/lib/consult';
 import { googleStatus } from '@/lib/google';
 import { AppointmentActions } from './AppointmentActions';
 
@@ -10,7 +10,9 @@ export const metadata = { title: 'Consultations' };
 interface Row {
   ref: string; starts_at: string; ends_at: string; status: string; name: string; phone: string; email: string; age: string; note: string;
   meet_url: string | null; doctor_name: string; doctor_slug: string;
+  payment_status: string; amount_paise: number | null; payment_ref: string | null;
 }
+const MONEY: Record<string, string> = { paid: 'Paid', refunded: 'Refunded', pending: 'Not paid' };
 
 const LABEL: Record<string, string> = { confirmed: 'Booked', completed: 'Completed', no_show: 'Did not attend', cancelled: 'Cancelled', pending_payment: 'Awaiting payment' };
 
@@ -75,8 +77,11 @@ export default async function Consultations({ searchParams }: { searchParams: Pr
                   {r.note && <span className="ad-sub ad-patient-note">{r.note}</span>}
                 </td>
                 <td>{r.doctor_name}</td>
-                <td><span className={`ad-pill ad-pill-${r.status === 'confirmed' || r.status === 'completed' ? 'published' : 'draft'}`}>{LABEL[r.status] ?? r.status}</span></td>
-                <td className="ad-row-actions"><AppointmentActions refId={r.ref} status={r.status} meet={r.meet_url} doctor={r.doctor_slug} current={new Date(r.starts_at).toISOString()} started={new Date(r.starts_at).getTime() < Date.now()} /></td>
+                <td>
+                  <span className={`ad-pill ad-pill-${r.status === 'confirmed' || r.status === 'completed' ? 'published' : 'draft'}`}>{LABEL[r.status] ?? r.status}</span>
+                  {MONEY[r.payment_status] && r.amount_paise ? <span className="ad-muted ad-sub" title={r.payment_ref ?? undefined}>{MONEY[r.payment_status]} · {rupees(r.amount_paise)}</span> : null}
+                </td>
+                <td className="ad-row-actions"><AppointmentActions refId={r.ref} status={r.status} paid={r.payment_status === 'paid' && !!r.amount_paise ? rupees(r.amount_paise!) : ''} meet={r.meet_url} doctor={r.doctor_slug} current={new Date(r.starts_at).toISOString()} started={new Date(r.starts_at).getTime() < Date.now()} /></td>
               </tr>
             ))}
           </tbody>

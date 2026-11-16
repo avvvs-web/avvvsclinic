@@ -9,6 +9,8 @@ export const dynamic = 'force-dynamic';
 
 // Books an online consultation: checks the details, takes the slot, creates the Meet event,
 // emails the patient, the clinic and the doctor. The same bot checks as the in-person form.
+// With online payment on and a fee set, the slot is only held: the reply carries what the payment
+// window needs, and the booking is confirmed by /api/consult/pay or the gateway's webhook.
 
 const hits = new Map<string, number[]>();
 function limited(ip: string) {
@@ -43,5 +45,5 @@ export async function POST(req: Request) {
 
   const r = await createAppointment(doctor, input);
   if (!r.ok) return Response.json(r, { status: r.error === 'taken' ? 409 : r.error === 'unavailable' ? 503 : 500 });
-  return Response.json({ ok: true, ref: r.ref, token: r.token, status: r.status });
+  return Response.json({ ok: true, ref: r.ref, token: r.token, status: r.status, checkout: r.checkout });
 }

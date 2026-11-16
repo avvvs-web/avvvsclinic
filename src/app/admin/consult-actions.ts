@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { requireAdmin, requireUser } from '@/lib/auth';
-import { appointmentByRef, cancelAppointment, rescheduleAppointment } from '@/lib/appointments';
+import { appointmentByRef, cancelAppointment, refundPayment, rescheduleAppointment } from '@/lib/appointments';
 import { toMin } from '@/lib/consult';
 import { ensureSchema, sql } from '@/lib/db';
 import { createEvent, deleteEvent, disconnectGoogle } from '@/lib/google';
@@ -67,6 +67,17 @@ export async function adminCancel(ref: string): Promise<FormState> {
   const ok = await cancelAppointment(a, 'clinic');
   revalidatePath('/admin/consultations');
   return ok ? { ok: 'Cancelled. The patient and the doctor have been emailed.' } : { error: 'That appointment is not active.' };
+}
+
+/** Refunds a paid fee by hand: for a missed or completed consultation the clinic decides to refund, or a refund that failed earlier. */
+export async function adminRefund(ref: string): Promise<FormState> {
+  await requireUser();
+  const a = await appointmentByRef(ref);
+  if (!a) return { error: 'That appointment no longer exists.' };
+  if (a.payment_status !== 'paid') return { error: 'There is no payment to refund on this appointment.' };
+  const ok = await refundPayment(a);
+  revalidatePath('/admin/consultations');
+  return ok ? { ok: 'Refund started. It reaches the patient in 5 to 10 working days.' } : { error: 'Razorpay did not accept the refund. Refund it in the Razorpay dashboard; the clinic inbox has the details.' };
 }
 
 export async function adminReschedule(ref: string, start: string): Promise<FormState> {

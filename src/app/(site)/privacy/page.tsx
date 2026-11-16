@@ -50,7 +50,7 @@ export default function Privacy() {
             <li><b>Our website host</b> (Vercel), which runs the site and keeps short technical logs.</li>
             <li><b>Google</b> (Calendar and Meet), which holds the calendar event and runs the video call for an online consultation.</li>
             <li><b>Our database provider</b> (Neon), which stores online consultation appointments.</li>
-            <li><b>Our payment gateway</b>, once online payment is switched on, which processes your payment and refunds and must keep payment records under Reserve Bank of India rules.</li>
+            <li><b>Our payment gateway</b> (Razorpay), when you pay online, which processes your payment and refunds and must keep payment records under Reserve Bank of India rules.</li>
             <li><b>Google</b> (Analytics) and <b>Meta</b> (Pixel), only if you allow them. They never receive what you type in the booking form.</li>
           </ul>
           <p>Some of these providers process data outside India. We share only what each needs to provide its service.</p>

@@ -7,6 +7,7 @@ import { onlineBookingOn } from '@/lib/content';
 import { hasDatabase } from '@/lib/db';
 import { canCreateEvents } from '@/lib/google';
 import { breadcrumbLd, medicalPageLd } from '@/lib/ld';
+import { paymentOn } from '@/lib/payments';
 import { onlineDoctorRows, toOnlineDoctor } from '@/lib/slots';
 import { CLINIC, alternatesFor, tel } from '@/lib/site';
 
@@ -36,7 +37,7 @@ export default async function ConsultPage() {
   return (
     <main id="main" className="mist">
       {open ? (
-        <Suspense fallback={<div style={{ minHeight: '100svh' }} />}><ConsultForm doctors={doctors} /></Suspense>
+        <Suspense fallback={<div style={{ minHeight: '100svh' }} />}><ConsultForm doctors={doctors} payOnline={paymentOn()} /></Suspense>
       ) : (
         <div className="bk">
           <div className="bk-top">

@@ -14,15 +14,32 @@ import { useBookingMotion } from './useBookingMotion';
 type Step = 0 | 1 | 2;
 const STEPS = ['Doctor', 'Time', 'Your details'];
 
+// Razorpay's payment window (checkout.js), loaded only when a patient reaches the payment step
+type RzpResult = { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string };
+type RzpOptions = Record<string, unknown> & { handler: (r: RzpResult) => void; modal: { ondismiss: () => void } };
+declare global { interface Window { Razorpay?: new (o: RzpOptions) => { open(): void } } }
+const CHECKOUT_JS = 'https://checkout.razorpay.com/v1/checkout.js';
+function loadCheckout() {
+  return new Promise<void>((resolve, reject) => {
+    if (window.Razorpay) return resolve();
+    const s = document.createElement('script');
+    s.src = CHECKOUT_JS; s.async = true;
+    s.onload = () => (window.Razorpay ? resolve() : reject(new Error('checkout unavailable')));
+    s.onerror = () => { s.remove(); reject(new Error('checkout unavailable')); };
+    document.head.appendChild(s);
+  });
+}
+type Problem = 'failed' | 'taken' | 'unpaid' | 'refunded' | 'unconfirmed';
+
 /** Booking an online consultation: choose a doctor, pick a real free time, give your details. */
-export function ConsultForm({ doctors }: { doctors: OnlineDoctor[] }) {
+export function ConsultForm({ doctors, payOnline = false }: { doctors: OnlineDoctor[]; /** patients pay the fee when they book */ payOnline?: boolean }) {
   const params = useSearchParams();
   const router = useRouter();
   const preset = doctors.find((d) => d.slug === params.get('doctor'))?.slug ?? (doctors.length === 1 ? doctors[0].slug : '');
   const [c, setC] = useState<ConsultInput>({ doctor: preset, start: '', name: '', phone: '', email: '', age: '', note: '', consent: false });
   const [step, setStep] = useState<Step>(preset ? 1 : 0);
   const [err, setErr] = useState<Partial<Record<keyof ConsultInput, string>>>({});
-  const [state, setState] = useState<'idle' | 'sending' | 'failed' | 'taken'>('idle');
+  const [state, setState] = useState<'idle' | 'sending' | 'paying' | Problem>('idle');
   const started = useRef(Date.now());
   const top = useRef<HTMLDivElement>(null);
   const body = useRef<HTMLDivElement>(null);
@@ -52,12 +69,38 @@ export function ConsultForm({ doctors }: { doctors: OnlineDoctor[] }) {
       const r = await fetch('/api/consult', { method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...c, website: fd.get('website') || '', startedAt: started.current }) });
       const j = await r.json().catch(() => ({}));
+      if (r.ok && j.ok && j.checkout) { await pay(j.ref, j.token, j.checkout); return; }
       if (r.ok && j.ok) { trackBooking('online'); router.push(`/consult/${j.ref}?t=${j.token}&new=1`); return; }
       if (j.error === 'taken') { setState('taken'); set('start', ''); reload(); go(1); return; }
       if (j.fields) setErr(j.fields);
       setState('failed');
     } catch { setState('failed'); }
   }
+
+  // The time is now held for a few minutes. Open the payment window; the booking is confirmed when
+  // the payment is, and the time is given back if the window is closed without paying.
+  async function pay(ref: string, token: string, checkout: Record<string, unknown>) {
+    const post = (body: Record<string, unknown>) => fetch('/api/consult/pay', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ref, token, ...body }) });
+    try { await loadCheckout(); } catch { void post({ action: 'release' }); reload(); setState('failed'); return; }
+    setState('paying');
+    let done = false;
+    new window.Razorpay!({
+      ...checkout,
+      handler: async (result) => {
+        done = true;
+        setState('sending');
+        try {
+          const r = await post(result);
+          const j = await r.json().catch(() => ({}));
+          if (r.ok && j.ok) { trackBooking('online'); router.push(`/consult/${ref}?t=${token}&new=1`); return; }
+          if (j.error === 'refunded') { set('start', ''); reload(); setState('refunded'); go(1); return; }
+          setState('unconfirmed');
+        } catch { setState('unconfirmed'); }
+      },
+      modal: { ondismiss: () => { if (done) return; void post({ action: 'release' }).finally(reload); setState('unpaid'); } },
+    }).open();
+  }
+  const fee = payOnline && doctor?.feePaise ? doctor.feePaise : 0;
 
   return (
     <div className="bk" ref={top}>
@@ -98,7 +141,8 @@ export function ConsultForm({ doctors }: { doctors: OnlineDoctor[] }) {
                 <h2>When suits you?</h2>
                 <p className="small" style={{ textAlign: 'center', marginTop: -12 }}>{doctor.name} · {doctor.minutes} minutes by Google Meet</p>
                 {state === 'taken' && <p className="err" role="alert">Someone has just taken that time. Please choose another.</p>}
-                <SlotPicker days={days} failed={failed} value={c.start} onChange={(s) => { set('start', s); if (state === 'taken') setState('idle'); }} />
+                {state === 'refunded' && <p className="err" role="alert">That time went to someone else before your payment arrived, so the payment is being refunded in full. Please choose another time.</p>}
+                <SlotPicker days={days} failed={failed} value={c.start} onChange={(s) => { set('start', s); if (state === 'taken' || state === 'refunded') setState('idle'); }} />
                 {err.start && <p className="err" role="alert">{err.start}</p>}
               </>
             )}
@@ -119,7 +163,10 @@ export function ConsultForm({ doctors }: { doctors: OnlineDoctor[] }) {
                   <span>I agree to consult the doctor online by video. I understand the doctor cannot examine me in person and may ask me to visit the clinic, and that this is not for emergencies. <Link href="/terms#online" target="_blank">Terms</Link> · <Link href="/privacy" target="_blank">Privacy</Link>{doctor.feePaise ? <> · <Link href="/refunds" target="_blank">Refunds</Link></> : null}</span>
                 </label>
                 {err.consent && <p className="err" role="alert">{err.consent}</p>}
+                {fee > 0 && <p className="small" style={{ textAlign: 'center' }}>The fee is {rupees(fee)}. You pay it now through Razorpay, by UPI, card or net banking; the clinic never sees your card or UPI details. The time is held for you while you pay.</p>}
                 {state === 'failed' && <p className="err" role="alert">The booking could not be made. Please try again, or call {CLINIC.phones[0]}.</p>}
+                {state === 'unpaid' && <p className="err" role="alert">The payment was not completed, so nothing is booked and nothing was charged. You can try again.</p>}
+                {state === 'unconfirmed' && <p className="err" role="alert">Your payment may have gone through, but we could not confirm the booking just now. Please do not pay again: a confirmation email will follow within a few minutes if it did. If none arrives, call {CLINIC.phones[0]}.</p>}
               </>
             )}
           </div>
@@ -127,8 +174,8 @@ export function ConsultForm({ doctors }: { doctors: OnlineDoctor[] }) {
 
           <div className="bk-nav">
             {step > 0 ? <button type="button" className="bk-back" onClick={() => go((step - 1) as Step)}>Back</button> : <span />}
-            <button type="submit" className="btn" disabled={state === 'sending'}>
-              {state === 'sending' ? <><span className="spin" aria-hidden="true" /> Booking</> : step < 2 ? 'Continue' : 'Book the consultation'}
+            <button type="submit" className="btn" disabled={state === 'sending' || state === 'paying' || state === 'unconfirmed'}>
+              {state === 'sending' ? <><span className="spin" aria-hidden="true" /> Booking</> : state === 'paying' ? <><span className="spin" aria-hidden="true" /> Waiting for payment</> : step < 2 ? 'Continue' : fee ? `Pay ${rupees(fee)} and book` : 'Book the consultation'}
             </button>
           </div>
         </form>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { LegalPage } from '@/components/LegalPage';
 import { CANCEL_CUTOFF_MIN } from '@/lib/consult';
+import { paymentOn } from '@/lib/payments';
 import { CLINIC, alternatesFor, tel } from '@/lib/site';
 
 export const metadata: Metadata = {
@@ -14,6 +15,9 @@ const hours = CANCEL_CUTOFF_MIN / 60;
 
 // A draft for legal review, and for the clinic to confirm the refund rules before online payment is
 // switched on (lib/payments.ts). Payment gateways ask for this page when a merchant account is opened.
+// "How you pay" follows whether payment is on, so the page is read afresh on each request.
+export const dynamic = 'force-dynamic';
+
 export default function Refunds() {
   const mail = <a href={`mailto:${CLINIC.email}`}>{CLINIC.email}</a>;
   const phone = <a href={tel(CLINIC.phones[0])}>{CLINIC.phones[0]}</a>;
@@ -27,14 +31,17 @@ export default function Refunds() {
           <p>The fee for an online consultation is shown next to the doctor’s name before you book, in Indian rupees, including any applicable taxes. Fees for consultations and therapies at the clinic are explained at the clinic before any treatment begins.</p>
           <p>A fee pays for the doctor’s time and advice. It does not depend on the outcome of the consultation, and it does not include medicines or therapies, which are charged separately.</p>
         </> },
-        { id: 'paying', title: 'How you pay', body: <>
+        { id: 'paying', title: 'How you pay', body: paymentOn() ? <>
+          <p>You pay the fee for an online consultation when you book, through Razorpay, a payment gateway authorised by the Reserve Bank of India, by UPI, card, net banking or wallet. Your payment details go to Razorpay, not to the clinic, and the clinic never sees or stores your card number or UPI PIN. The time you chose is held for a few minutes while you pay and is released if the payment does not complete; in that case nothing is charged. Your confirmation email is your receipt.</p>
+          <p>If a payment arrives after the time was released and the time has since gone to someone else, the payment is refunded in full automatically. Fees for visits to the clinic are paid at the clinic.</p>
+        </> : <>
           <p>At present, online consultations are booked without paying on this website. If a fee applies, the clinic tells you how to pay it. Fees for visits to the clinic are paid at the clinic.</p>
           <p>When online payment is switched on, you will pay when you book, through a licensed payment gateway, by UPI, card, net banking or wallet. Your payment details go to the gateway, not to the clinic, and the clinic never sees or stores your card number or UPI PIN. An appointment awaiting payment is held for a few minutes and released if the payment does not complete. You receive a receipt by email.</p>
         </> },
         { id: 'cancel', title: 'Cancelling or changing an online consultation', body: <>
           <p>You can cancel or move an online consultation up to {hours} hours before it starts, using the link in your confirmation email. Closer to the time, please call {phone}.</p>
           <ul>
-            <li><b>You cancel {hours} hours or more before the start:</b> the full fee is refunded.</li>
+            <li><b>You cancel {hours} hours or more before the start:</b> the full fee is refunded, automatically when you paid online.</li>
             <li><b>You cancel less than {hours} hours before, or do not join:</b> the fee is not normally refunded, because the doctor’s time was kept for you. If something serious stopped you, call the clinic and it will consider a refund or a new time.</li>
             <li><b>You move the appointment</b> to another available time with the same doctor: no charge, and the fee you paid carries over.</li>
           </ul>

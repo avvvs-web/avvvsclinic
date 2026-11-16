@@ -159,8 +159,8 @@ export function ensureSchema() {
       to_date TEXT NOT NULL,
       note TEXT NOT NULL DEFAULT ''
     )`;
-    // payment_* and hold_expires_at are unused while there is no online payment; they are here so a
-    // gateway can be added without changing the table (status pending_payment until it is paid)
+    // payment_* and hold_expires_at are used only when online payment is switched on
+    // (status pending_payment, held until hold_expires_at, until it is paid)
     await q`CREATE TABLE IF NOT EXISTS clinic_appointments (
       id SERIAL PRIMARY KEY,
       ref TEXT NOT NULL UNIQUE,
@@ -187,6 +187,13 @@ export function ensureSchema() {
       hold_expires_at TIMESTAMPTZ,
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     )`;
+    // online payment (lib/payments.ts): the gateway's order, the patient's link token kept sealed
+    // while a payment is awaited (the webhook needs it for the confirmation email), and the refund
+    await q`ALTER TABLE clinic_appointments ADD COLUMN IF NOT EXISTS payment_order_ref TEXT`;
+    await q`ALTER TABLE clinic_appointments ADD COLUMN IF NOT EXISTS hold_token TEXT`;
+    await q`ALTER TABLE clinic_appointments ADD COLUMN IF NOT EXISTS refund_ref TEXT`;
+    await q`ALTER TABLE clinic_appointments ADD COLUMN IF NOT EXISTS refunded_at TIMESTAMPTZ`;
+    await q`CREATE INDEX IF NOT EXISTS clinic_appointments_order ON clinic_appointments (payment_order_ref)`;
     // the guard against double booking: one live appointment per doctor per start time
     await q`CREATE UNIQUE INDEX IF NOT EXISTS clinic_appointments_slot ON clinic_appointments (doctor_id, starts_at)
       WHERE status IN ('pending_payment', 'confirmed')`;

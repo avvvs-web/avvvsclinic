@@ -3,6 +3,8 @@ import { isLocalDatabase } from '@/lib/db';
 import { canCreateEvents, googleStatus } from '@/lib/google';
 import { fmtDate } from '@/lib/consult';
 import { onlineBookingOn } from '@/lib/content';
+import { paymentOn } from '@/lib/payments';
+import { razorpayConfigured, razorpayMode, razorpayWebhookReady } from '@/lib/payments-razorpay';
 import { onlineDoctorRows } from '@/lib/slots';
 import { OnlineSwitch } from './OnlineSwitch';
 import { SettingsControls } from './SettingsControls';
@@ -25,6 +27,7 @@ export default async function Settings({ searchParams }: { searchParams: Promise
   const secret = !!process.env.APP_SECRET?.trim();
   const cron = !!process.env.CRON_SECRET?.trim();
   const local = isLocalDatabase();
+  const paying = paymentOn(), keys = razorpayConfigured(), hook = razorpayWebhookReady(), asked = process.env.PAYMENT_PROVIDER?.trim() === 'razorpay';
   const on = await onlineBookingOn();
   const online = (await onlineDoctorRows().catch(() => [])).length;
   const live = on && online > 0 && (await canCreateEvents());
@@ -60,6 +63,19 @@ export default async function Settings({ searchParams }: { searchParams: Promise
           <p className="ad-muted">Before connecting, add <code>GOOGLE_CLIENT_ID</code> and <code>GOOGLE_CLIENT_SECRET</code> to the site’s environment (see <code>docs/ENV.md</code>), then redeploy.{local && ' On this computer, bookings work without Google and use a placeholder Meet link.'}</p>
         )}
         <SettingsControls configured={g.configured} connected={g.connected} />
+      </section>
+
+      <section className="ad-card">
+        <div className="ad-card-top">
+          <h2>Online payment</h2>
+          <span className={`ad-pill ad-pill-${paying ? 'published' : 'draft'}`}>{paying ? (razorpayMode() === 'live' ? 'On' : 'On, test mode') : 'Off'}</span>
+        </div>
+        <p className="ad-muted">
+          {paying
+            ? `Patients pay a doctor’s fee through Razorpay when they book${razorpayMode() === 'live' ? '' : ' (test mode: no real money moves)'}. Doctors with no fee are booked free. Cancellations are refunded automatically.${hook ? '' : ' The webhook secret is missing: without it, a patient whose browser closes during payment is not confirmed. Add RAZORPAY_WEBHOOK_SECRET.'}`
+            : asked && !keys ? 'PAYMENT_PROVIDER is set to razorpay, but the Razorpay key and secret are not, so payment stays off.'
+            : 'Online consultations are booked without paying on the website. To take the fee at booking, see docs/ENV.md, section 7.'}
+        </p>
       </section>
 
       <section className="ad-card">

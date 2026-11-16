@@ -155,6 +155,43 @@ reminder on the morning of their consultation. Vercel sends it automatically onc
 Then, for each doctor, open **Admin → Doctors → the doctor → Online consultations**: add their email,
 hours and (optionally) fee, and switch it on.
 
+## 7. Online payment for consultations (Razorpay)
+
+Off until these are set. With them, a patient pays the doctor's fee when they book; a doctor with
+no fee is still booked free.
+
+| Variable | Required | Value | Set for |
+|---|---|---|---|
+| `PAYMENT_PROVIDER` | Yes | `razorpay` (leave empty to switch payment off again) | Production |
+| `RAZORPAY_KEY_ID` | Yes | The key id, `rzp_live_…` (or `rzp_test_…` to try it) | Production |
+| `RAZORPAY_KEY_SECRET` | Yes | That key's secret. Mark it **Sensitive** | Production |
+| `RAZORPAY_WEBHOOK_SECRET` | Yes | The secret you type when creating the webhook below. Mark it **Sensitive** | Production |
+
+**Razorpay dashboard, once:**
+
+1. **Account & Settings → Websites & API keys**: `https://clinic.avvvs.com` must be listed as an
+   approved website, or payments fail with "Website Mismatch".
+2. **The key.** The account's existing live key also runs the pharmacy's Shopify checkout. Its secret
+   is shown only once, when the key is made. **Do not press Regenerate Key** to get it: that replaces
+   the key and stops the pharmacy's payments until Shopify is reconnected. Use the secret saved when
+   the key was made; if it is lost, plan the regeneration with the pharmacy checkout in mind.
+3. **Account & Settings → Webhooks → Add new webhook**: URL
+   `https://clinic.avvvs.com/api/payments/razorpay/webhook`, a secret of your own (a long random
+   phrase; the same value goes in `RAZORPAY_WEBHOOK_SECRET`), events **payment.captured** and
+   **order.paid**. The webhook confirms a paid booking when the patient's browser never returns from
+   the payment window. It ignores the pharmacy's payments.
+4. **Account & Settings → Payment capture**: leave on automatic capture.
+5. Redeploy. **Admin → Settings** shows whether payment is on, and in which mode (live or test).
+
+To try it without real money, use a test-mode key (`rzp_test_…`, from the dashboard's Test Mode)
+and a test-mode webhook on a Preview deployment.
+
+**What happens to the money:** a paid booking that the patient cancels in time, or that the clinic
+cancels, is refunded automatically to where it was paid from. **Admin → Consultations** shows "Paid"
+or "Refunded" on each appointment, and has a **Refund** button for a completed or missed consultation
+the clinic decides to refund. If Razorpay ever refuses a refund, the clinic inbox gets an email
+saying to do it in the Razorpay dashboard. The rules patients see are on `/refunds`.
+
 ## Set automatically (do not add)
 
 `VERCEL_ENV`, `VERCEL_PROJECT_PRODUCTION_URL` and `NODE_ENV` come from Vercel and Next.js. Preview
@@ -167,6 +204,7 @@ deployments are kept out of search engines automatically.
 - [ ] Neon and Blob connected, `ADMIN_SETUP_KEY` set, first admin created at `/admin/setup`
 - [ ] Search Console and Bing verified, sitemap submitted in both
 - [ ] `INDEXNOW_KEY` set and `/indexnow.txt` showing it
+- [ ] (When taking payment) Razorpay variables set, `clinic.avvvs.com` approved in Razorpay, webhook created, one real booking paid and refunded
 - [ ] GA4 and Meta Pixel IDs set; `generate_lead` marked as a key event
 - [ ] Google OAuth client created and published; `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `APP_SECRET`, `CRON_SECRET` set
 - [ ] Google Calendar connected in Admin → Settings, test sent

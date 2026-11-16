@@ -48,6 +48,7 @@ export async function doctorSlots(doctor: Pick<DoctorOnlineRow, 'id' | 'online_m
     sql()`SELECT weekday, start_min, end_min FROM clinic_availability WHERE doctor_id = ${doctor.id} ORDER BY weekday, start_min`,
     sql()`SELECT from_date, to_date FROM clinic_time_off WHERE doctor_id = ${doctor.id} AND to_date >= ${first}`,
     sql()`SELECT id, starts_at, ends_at FROM clinic_appointments WHERE doctor_id = ${doctor.id} AND status IN ('pending_payment', 'confirmed')
+      AND NOT (status = 'pending_payment' AND hold_expires_at IS NOT NULL AND hold_expires_at < now())
       AND ends_at > ${from.toISOString()} AND starts_at < ${to.toISOString()}`,
     otherBusy(from, to),
   ]);
