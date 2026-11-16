@@ -5,7 +5,7 @@ import { POSTS as BUILT_IN_POSTS, type Block, type Post } from './journal';
 import type { Clinic, QA } from './clinics';
 import { clinicPage, cleanClinicText, type ClinicText } from './clinicPages';
 import { THERAPIES as BUILT_IN_THERAPIES, type Therapy } from './therapies';
-import { DOCTORS as BUILT_IN_DOCTORS } from './site';
+import { DOCTORS as BUILT_IN_DOCTORS, doctorPhoto } from './site';
 import { sitePhotoDef, type Photo } from './photos';
 
 /*
@@ -203,7 +203,7 @@ export interface DoctorRow {
 
 /** The doctors shown on the site, in the admin's order; the launch list when there is no database. */
 export async function getDoctors(): Promise<Doctor[]> {
-  if (!hasDatabase()) return BUILT_IN_DOCTORS.map((d) => ({ ...d, photo: `/doctors/${d.slug}.jpg` }));
+  if (!hasDatabase()) return BUILT_IN_DOCTORS.map((d) => ({ ...d, photo: doctorPhoto(d) }));
   const db = await rows<DoctorRow>(() => sql()`SELECT * FROM clinic_doctors WHERE visible ORDER BY sort, name`);
   return db.map((d) => ({
     slug: d.slug, name: d.name, quals: arr(d.quals), role: d.role || undefined,

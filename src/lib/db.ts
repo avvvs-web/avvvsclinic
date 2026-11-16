@@ -1,6 +1,6 @@
 import 'server-only';
 import { neon } from '@neondatabase/serverless';
-import { DOCTORS } from './site';
+import { DOCTORS, doctorPhoto } from './site';
 
 /*
  * The admin's database.
@@ -204,7 +204,7 @@ export function ensureSchema() {
       let sort = 10;
       for (const d of DOCTORS) {
         await q`INSERT INTO clinic_doctors (slug, name, quals, role, photo_url, sort)
-          VALUES (${d.slug}, ${d.name}, ${d.quals}, ${d.role ?? ''}, ${`/doctors/${d.slug}.jpg`}, ${sort}) ON CONFLICT (slug) DO NOTHING`;
+          VALUES (${d.slug}, ${d.name}, ${d.quals}, ${d.role ?? ''}, ${doctorPhoto(d)}, ${sort}) ON CONFLICT (slug) DO NOTHING`;
         sort += 10;
       }
       await q`INSERT INTO clinic_meta (key, value) VALUES ('doctors_seeded', now()::text) ON CONFLICT (key) DO NOTHING`;
@@ -224,9 +224,17 @@ export function ensureSchema() {
     const added = await q`SELECT 1 FROM clinic_meta WHERE key = 'doctor_added_niyatha_kaloor'`;
     if (!added.length) {
       await q`INSERT INTO clinic_doctors (slug, name, quals, role, photo_url, sort)
-        VALUES ('niyatha-kaloor', 'Dr. Niyatha Kaloor', ${['MBBS']}, '', '/doctors/niyatha-kaloor.jpg',
+        VALUES ('niyatha-kaloor', 'Dr. Niyatha Kaloor', ${['MBBS']}, '', '/doctors/niyatha-kaloor-2.jpg',
           (SELECT COALESCE(MAX(sort), 0) + 10 FROM clinic_doctors)) ON CONFLICT (slug) DO NOTHING`;
       await q`INSERT INTO clinic_meta (key, value) VALUES ('doctor_added_niyatha_kaloor', now()::text) ON CONFLICT (key) DO NOTHING`;
+    }
+    // 2026-11-16: Dr. Niyatha Kaloor's new portrait, under a new name. Applied once, and only while
+    // her photo is still the built-in one, so a photo uploaded in the admin is left alone.
+    const portrait = await q`SELECT 1 FROM clinic_meta WHERE key = 'doctor_photo_niyatha_2026_11_16'`;
+    if (!portrait.length) {
+      await q`UPDATE clinic_doctors SET photo_url = '/doctors/niyatha-kaloor-2.jpg', updated_at = now()
+        WHERE slug = 'niyatha-kaloor' AND photo_url = '/doctors/niyatha-kaloor.jpg'`;
+      await q`INSERT INTO clinic_meta (key, value) VALUES ('doctor_photo_niyatha_2026_11_16', now()::text) ON CONFLICT (key) DO NOTHING`;
     }
   })().catch((e) => { ready = null; throw e; });
   return ready;

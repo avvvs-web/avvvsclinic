@@ -56,5 +56,9 @@ export const DOCTORS = [
   { slug: 'ranjith-kumar', name: 'Dr. Ranjith Kumar', quals: ['BAMS', 'MBBS', 'DA', 'MD'], role: 'Pain Management Clinic' },
   { slug: 'rekha-deepak', name: 'Dr. Rekha Deepak', quals: ['BAMS', 'MPH'] },
   { slug: 'archana-manoj', name: 'Dr. Archana Manoj', quals: ['BAMS', 'PGDAC'] },
-  { slug: 'niyatha-kaloor', name: 'Dr. Niyatha Kaloor', quals: ['MBBS'] },
-] as { slug: string; name: string; quals: string[]; role?: string }[];
+  // a new portrait (2026-11-16) under a new name, so no image cache keeps the old one
+  { slug: 'niyatha-kaloor', name: 'Dr. Niyatha Kaloor', quals: ['MBBS'], photo: '/doctors/niyatha-kaloor-2.jpg' },
+] as { slug: string; name: string; quals: string[]; role?: string; photo?: string }[];
+
+/** A built-in doctor's portrait in public/doctors. */
+export const doctorPhoto = (d: { slug: string; photo?: string }) => d.photo ?? `/doctors/${d.slug}.jpg`;

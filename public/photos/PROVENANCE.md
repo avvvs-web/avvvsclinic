@@ -39,3 +39,10 @@ shirodhara.jpg: the same Shirodhara scene redone (towel lower, shoulder bare), c
 Replaces shirodhara-dhara.jpg everywhere it was used (home hero, the Shirodhara therapy, the journal cover, share
 card, sitemap and structured data); a new name so no cache serves the old picture. The old file is kept only in
 case an admin photo choice still points at it.
+
+public/doctors/niyatha-kaloor-2.jpg: Dr. Niyatha Kaloor's new portrait, supplied by the clinic, cropped to the
+other portraits' 1199×1312 frame. It replaces niyatha-kaloor.jpg (a new name, so no image cache keeps the old one).
+
+gloveda-revive.jpg: a practitioner in a Gloveda Revive coat using a skin-care device over a turmeric face pack,
+converted from WebP to JPEG. Illustrative. Replaces revive.jpg for the Gloveda Revive page, its tile, share card
+and sitemap entry (revive.jpg is kept for any admin photo choice that points at it).

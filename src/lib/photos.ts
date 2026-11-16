@@ -9,9 +9,9 @@ import { CLINICS, REVIVE } from './clinics';
 export interface Photo { src: string; alt: string; position?: string }
 
 export const REVIVE_IMAGE: Photo = {
-  src: '/photos/revive.jpg',
-  alt: 'A therapist applying a turmeric face pack with a skin-care device as a woman rests on a treatment bed',
-  position: '40% 50%',
+  src: '/photos/gloveda-revive.jpg',
+  alt: 'A Gloveda Revive practitioner using a skin-care device over a turmeric face pack as a woman rests on a treatment bed',
+  position: '40% 42%',
 };
 
 export interface SitePhoto { id: string; label: string; where: string; page: string; default: Photo }
@@ -23,7 +23,7 @@ export const TILES: { slug: string; size: 'wide' | 'half' | 'third' | 'full'; ph
   { slug: 'headache-clinic', size: 'third', photo: { src: '/photos/headache.jpg', alt: '', position: '42% 40%' } },
   { slug: 'obesity-lifestyle-clinic', size: 'third', photo: { src: '/photos/lifestyle.jpg', alt: '', position: '30% 50%' } },
   { slug: 'infertility-clinic', size: 'third', photo: { src: '/photos/infertility.jpg', alt: '', position: '62% 50%' } },
-  { slug: REVIVE.slug, size: 'full', photo: { src: '/photos/revive.jpg', alt: '', position: '40% 45%' } },
+  { slug: REVIVE.slug, size: 'full', photo: { src: '/photos/gloveda-revive.jpg', alt: '', position: '40% 45%' } },
 ];
 
 const nameOf = (slug: string) => (slug === REVIVE.slug ? REVIVE.name : CLINICS.find((c) => c.slug === slug)?.name ?? slug);
