@@ -83,7 +83,7 @@ export function ClinicTextEditor({ slug, name, initial, edited: startEdited }: {
           <fieldset className="ad-fieldset">
             <legend className="ad-field"><span>What care looks like</span></legend>
             <p className="ad-muted">Three points read best, side by side on a computer.</p>
-            <PairsEditor items={d.focus} keys={['h', 'p']} labels={['Heading', 'A sentence or two']} add="Add a point" short onChange={(focus) => up({ focus })} />
+            <PairsEditor items={d.focus} keys={['h', 'p']} labels={['Heading', 'A sentence or two. For a list, put each point on its own line after the first.']} add="Add a point" short onChange={(focus) => up({ focus })} />
           </fieldset>
 
           <fieldset className="ad-fieldset">

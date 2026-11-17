@@ -55,7 +55,11 @@ export default async function ClinicPage({ params }: { params: Promise<{ slug: s
       <section className="sec mist" aria-labelledby="care-title">
         <div className="in center head"><h2 id="care-title" className="t-2" data-reveal>{c.slug === 'headache-clinic' ? 'The headaches we see.' : 'What care looks like.'}</h2></div>
         <ul className="cols3" data-stagger>
-          {c.focus.map((f, i) => <li key={i}><h3>{f.h}</h3><p>{f.p}</p></li>)}
+          {c.focus.map((f, i) => {
+            // a care point's first line is its sentence; any further lines are a list
+            const [lead, ...points] = f.p.split('\n').map((s) => s.trim()).filter(Boolean);
+            return <li key={i}><h3>{f.h}</h3><p>{lead}</p>{points.length > 0 && <ul className="care-points">{points.map((p) => <li key={p}>{p}</li>)}</ul>}</li>;
+          })}
         </ul>
         {therapies.length > 0 && (
           <div style={{ marginTop: 'clamp(56px, 7vw, 88px)', display: 'grid', gap: 18, justifyItems: 'center' }} data-reveal>

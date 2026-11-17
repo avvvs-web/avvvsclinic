@@ -313,6 +313,9 @@ html:not(.anim) .hero-caption { opacity: 1; }
 .cols3 li { display: grid; gap: 10px; align-content: start; }
 .cols3 h3 { font-size: 1.5rem; line-height: 1.12; }
 .cols3 p { color: var(--ink-2); }
+.care-points { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 10px; }
+.cols3 .care-points li { position: relative; display: block; padding-left: 26px; color: var(--ink-2); line-height: 1.45; text-align: left; }
+.care-points li::before { content: ''; position: absolute; left: 2px; top: 0.5em; width: 9px; height: 9px; border-radius: 50%; background: var(--blue); }
 .cols3 li:only-child { text-align: center; max-width: 62ch; margin: 0 auto; }
 .th-more .g-ml { color: var(--gold); font-size: 1.15rem; margin-top: -4px; }
 .th-more { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }

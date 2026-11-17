@@ -146,7 +146,8 @@ export const CLINICS: Clinic[] = [
     ],
     focus: [
       { h: 'During pregnancy', p: 'Personalised care and dietary guidance tailored to your needs, month by month, alongside regular antenatal care.' },
-      { h: 'After birth', p: 'Supportive postnatal therapies rooted in Kerala’s Ayurvedic tradition, including care to support breast milk production and help mothers with breastfeeding.' },
+      // the lines after the first are shown as a list (the clinic's own points, supplied 2026-11-17)
+      { h: 'After birth', p: 'Supportive postnatal therapies rooted in Kerala’s Ayurvedic tradition, which:\nRestore strength and vitality.\nSupport abdominal and pelvic muscle recovery.\nRelieve back pain and body aches.\nSupport healthy breast milk production.\nHelp reduce pigmentation and improve skin tone.' },
     ],
     therapies: ['abhyanga', 'varnya-lepana', 'vethu-kuli', 'dhoomapana', 'keshadhupana', 'anjana', 'veshtanam'],
     image: { src: '/photos/mother.jpg', alt: 'An expectant mother resting her hands on her belly', position: '50% 40%' },
